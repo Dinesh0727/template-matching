@@ -1,15 +1,15 @@
 package com.tanla.template_matching.entity;
 
-public class Product {
+public class Message {
 
     private int id;
 
     private String text;
 
-    public Product() {
+    public Message() {
     }
 
-    public Product(int id, String text) {
+    public Message(int id, String text) {
         this.id = id;
         this.text = text;
     }

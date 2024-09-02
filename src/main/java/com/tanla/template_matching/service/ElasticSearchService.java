@@ -60,7 +60,6 @@ public class ElasticSearchService {
                 .loadTrustMaterial(trustStore, null);
         final SSLContext sslContext = sslContextBuilder.build();
 
-        // Create the low-level client
         RestClientBuilder restClientBuilder = RestClient.builder(HttpHost.create(SERVER_URL))
                 .setDefaultHeaders(new Header[] {
                         new BasicHeader("Authorization", "ApiKey " + apiKey)
@@ -74,7 +73,6 @@ public class ElasticSearchService {
         return restClientBuilder.build();
     }
 
-    // Create the transport with a Jackson mapper
     @Bean
     public ElasticsearchTransport transport() throws KeyManagementException, CertificateException, KeyStoreException,
             NoSuchAlgorithmException, IOException {
@@ -82,7 +80,6 @@ public class ElasticSearchService {
                 restClient(), new JacksonJsonpMapper());
     }
 
-    // And create the API client
     @Bean
     public ElasticsearchClient elasticsearchClient() throws KeyManagementException, CertificateException,
             KeyStoreException, NoSuchAlgorithmException, IOException {

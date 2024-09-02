@@ -1,26 +1,43 @@
-package com.tanla.template_matching.service;
+package com.tanla.template_matching.search;
 
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+
+import com.tanla.template_matching.Utils.StringUtil;
+
+import io.micrometer.common.util.StringUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
-import io.micrometer.common.util.StringUtils;
 
 public class RegexSearch {
+
+    public static void regexSearch(String searchText, List<String> strings) {
+        System.out.print("===========================================================\nRegex Search\n\n");
+        long start = System.currentTimeMillis();
+        int i = 0;
+        for (; i < strings.size(); i++) {
+            if (RegexSearch.matchTemplate(searchText, strings.get(i), i + 1)) {
+                System.out.println("Found the Template Match with regex matching: " + strings.get(i));
+                break;
+            }
+        }
+        if (i == strings.size())
+            System.out.println("No full match found.");
+        long end = System.currentTimeMillis();
+        System.out.println("Time taken to find the template through regex search : " + (end - start));
+        System.out.println("============================================================");
+    }
+
     public static boolean matchTemplate(String inputMsg, String preExistingTemplateBody, int index) {
 
-        String first = preExistingTemplateBody;
-
-        String escapeCharSet1 = "\\^$.|?*+()[]";
-
-        String escapeCharSet2 = "{}";
-
-        String x = escapeSpecialCharacters(preExistingTemplateBody, escapeCharSet1);
-        String patternStr1 = x.replaceAll("\\{\\{\\d*\\}\\}", "(.*)");
-        String finalPattern = escapeSpecialCharacters(patternStr1, escapeCharSet2);
+        String finalPattern = StringUtil.escapeSpecialCharacters(
+                StringUtil.escapeSpecialCharacters(preExistingTemplateBody, StringUtil.escapeCharSet1)
+                        .replaceAll("\\{\\{\\d*\\}\\}", "(.*)"),
+                StringUtil.escapeCharSet2);
 
         if (StringUtils.isBlank(finalPattern) || "null".equals(finalPattern)) {
             return false; // continue with the next template
@@ -48,16 +65,10 @@ public class RegexSearch {
 
             } catch (PatternSyntaxException exception) {
                 System.out.println("Id of the document where the exception occured : " + index);
-                System.out.println("Before the deletion of anything : " + first);
-                System.out.println("\nAfter the escaping of character set 2 : " + patternStr1);
                 System.err.println("\n" + exception);
             }
         }
 
         return false;
-    }
-
-    private static String escapeSpecialCharacters(String preExistingTemplateBody, String escapeCharSet) {
-        return preExistingTemplateBody.replaceAll("([" + Pattern.quote(escapeCharSet) + "])", "\\\\$1");
     }
 }
