@@ -16,20 +16,12 @@ import java.util.regex.Matcher;
 public class RegexSearch {
 
     public static void regexSearch(String searchText, List<String> strings) {
-        System.out.print("===========================================================\nRegex Search\n\n");
-        long start = System.currentTimeMillis();
         int i = 0;
         for (; i < strings.size(); i++) {
-            if (RegexSearch.matchTemplate(searchText, strings.get(i), i + 1)) {
-                System.out.println("Found the Template Match with regex matching: " + strings.get(i));
+            if (matchTemplate(searchText, strings.get(i), i + 1)) {
                 break;
             }
         }
-        if (i == strings.size())
-            System.out.println("No full match found.");
-        long end = System.currentTimeMillis();
-        System.out.println("Time taken to find the template through regex search : " + (end - start));
-        System.out.println("============================================================");
     }
 
     public static boolean matchTemplate(String inputMsg, String preExistingTemplateBody, int index) {
@@ -50,16 +42,11 @@ public class RegexSearch {
                 Pattern pattern = Pattern.compile(finalPattern);
                 Matcher matcher = pattern.matcher(inputMsg);
                 while (matcher.matches()) {
-                    // counter++;
 
                     Map<String, String> paramNames = new HashMap<String, String>();
                     for (int i = 0; i < params.size(); i++) {
                         paramNames.put(params.get(i) + "", matcher.group(i + 1));
                     }
-                    System.out.println(paramNames);
-                    // System.out.println("Found the appropriate template: \n" +
-                    // preExistingTemplateBody);
-                    System.out.println("The template id : " + index);
                     return true;
                 }
 

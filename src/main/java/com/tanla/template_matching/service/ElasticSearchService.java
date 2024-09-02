@@ -36,7 +36,7 @@ import co.elastic.clients.transport.rest_client.RestClientTransport;
 public class ElasticSearchService {
 
     private static final String SERVER_URL = "https://127.0.0.1:9200";
-    private static final String apiKey = "X242VGw1RUItMHZMSW1Eajg3Y2Y6TmZQaUY5amRTOGF5NjJHYVZQZ2tvZw==";
+    private static final String apiKey = "";
 
     @Bean
     public RestClient restClient() throws CertificateException, IOException, KeyStoreException,

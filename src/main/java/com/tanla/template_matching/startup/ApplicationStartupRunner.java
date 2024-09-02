@@ -20,24 +20,15 @@ public class ApplicationStartupRunner implements CommandLineRunner {
         @Override
         public void run(String... args) throws IOException {
 
-                String template_text_index = "template_texts_pre_prod";
+                String searchText = "Dear Parent,\n\nThank you for registering with CodeAcademy\n\nRequest you to update your & your child’s names & email id to receive your personalized Coding Fundamentals Certificate\n\nClick here to fill in your details: https://codeacademy.com/update-details \n\nRegards,\nTeam CodeAcademy";
+
+                String template_text_index = PreExistingTemplates.templates_index;
 
                 ElasticSearch.createIndex(esClient, template_text_index);
 
-                // String deleteDocumentId = "280";
-                // ElasticSearch.deleteDocument(esClient, deleteDocumentId,
-                // template_text_index);
-
-                // Making Bulk Request to add data
-
                 ElasticSearch.bulkRequest(esClient, PreExistingTemplates.strings, template_text_index);
 
-                // Searching the text through Normal Search API and More Like This API
-
-                String searchText = "Dear Parent,\n\nThank you for registering with CodeAcademy\n\nRequest you to update your & your child’s names & email id to receive your personalized Coding Fundamentals Certificate\n\nClick here to fill in your details: https://codeacademy.com/update-details \n\nRegards,\nTeam CodeAcademy";
-
-                ElasticSearch.search(esClient, template_text_index, searchText);
-
+                // Searching for the template match
                 ElasticSearch.moreLikeThisSearch(esClient, template_text_index,
                                 searchText);
 

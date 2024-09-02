@@ -72,16 +72,12 @@ public class ElasticSearch {
         long end = System.currentTimeMillis();
         System.out.println("Time to Complete the normal search is : " + (end - start));
 
-        ResponseDetails(result);
+        printResponseDetails(result);
         System.out.print("===========================================================\n");
     }
 
     public static void moreLikeThisSearch(ElasticsearchClient esClient, String template_text_index,
             String searchText) throws IOException {
-
-        System.out.print(
-                "===========================================================\nMore Like This  Search\n\n");
-        long requestMakingStart = System.currentTimeMillis();
         MoreLikeThisQuery mltQuery = MoreLikeThisQuery.of(mlt -> mlt
                 .fields("text")
                 .like(l -> l.text(searchText)));
@@ -89,25 +85,12 @@ public class ElasticSearch {
         SearchRequest searchRequest = SearchRequest.of(sr -> sr
                 .index(template_text_index)
                 .query(q -> q.moreLikeThis(mltQuery))
-                .size(3) // You can adjust the number of results you want to fetch
-        );
-        long requestMakingEnd = System.currentTimeMillis();
-        System.out.println("Time taken to make the more-like-this Request : "
-                + (requestMakingEnd - requestMakingStart));
+                .size(3));
 
-        long morelikeThisSearchStart = System.currentTimeMillis();
         SearchResponse<Message> searchResponse = esClient.search(searchRequest, Message.class);
-        long morelikeThisSearchEnd = System.currentTimeMillis();
-
-        ResponseDetails(searchResponse);
-
-        System.out.println("Time taken to complete the more-like-this search : "
-                + (morelikeThisSearchEnd - morelikeThisSearchStart));
-
-        System.out.print("===========================================================\n");
     }
 
-    public static void ResponseDetails(SearchResponse<Message> searchResponse) {
+    static void printResponseDetails(SearchResponse<Message> searchResponse) {
         TotalHits total = searchResponse.hits().total();
         boolean isExactResult = total.relation() == TotalHitsRelation.Eq;
 
