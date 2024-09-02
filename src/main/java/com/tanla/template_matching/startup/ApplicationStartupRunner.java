@@ -19,6 +19,7 @@ public class ApplicationStartupRunner implements CommandLineRunner {
 
         @Override
         public void run(String... args) throws IOException {
+                System.out.println("Hi");
 
                 String searchText = "Dear Parent,\n\nThank you for registering with CodeAcademy\n\nRequest you to update your & your child’s names & email id to receive your personalized Coding Fundamentals Certificate\n\nClick here to fill in your details: https://codeacademy.com/update-details \n\nRegards,\nTeam CodeAcademy";
 

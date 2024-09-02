@@ -7,7 +7,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import com.tanla.template_matching.Utils.PreExistingTemplates;
-import com.tanla.template_matching.Utils.StringUtil;
 import com.tanla.template_matching.search.ElasticSearch;
 import com.tanla.template_matching.search.RegexSearch;
 
