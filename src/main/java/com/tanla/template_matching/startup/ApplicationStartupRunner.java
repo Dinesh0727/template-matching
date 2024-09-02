@@ -76,7 +76,7 @@ public class ApplicationStartupRunner implements CommandLineRunner {
 
                 // Searching the text through Normal Search API and More Like This API
 
-                String searchText = "Dear Parent,\n\nThank you for registering with CodeAcademy\n\nRequest you to update your & your child’s names & email id to receive your personalized Coding Fundamentals Certificate\n\nClick here to fill in your details: https://codeacademy.com/update-details\n\nRegards,\nTeam CodeAcademy";
+                String searchText = "Dear Parent,\n\nThank you for registering with CodeAcademy\n\nRequest you to update your & your child’s names & email id to receive your personalized Coding Fundamentals Certificate\n\nClick here to fill in your details: https://codeacademy.com/update-details \n\nRegards,\nTeam CodeAcademy";
 
                 normalSearch(esClient, template_text_index, searchText);
 
@@ -106,6 +106,8 @@ public class ApplicationStartupRunner implements CommandLineRunner {
                                 break;
                         }
                 }
+                if (i == strings.size())
+                        System.out.println("No full match found.");
                 long end = System.currentTimeMillis();
                 System.out.println("Time taken to find the template through regex search : " + (end - start));
                 System.out.println("============================================================");

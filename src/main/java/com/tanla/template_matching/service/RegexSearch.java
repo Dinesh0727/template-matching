@@ -18,6 +18,9 @@ public class RegexSearch {
 
         String escapeCharSet2 = "{}";
 
+        String rawInputMsg = inputMsg.replace("\n", "\\n");
+        String inputMsgProcessed = escapeSpecialCharacters(rawInputMsg, escapeCharSet1);
+
         String x = escapeSpecialCharacters(preExistingTemplateBody, escapeCharSet1);
         String patternStr1 = x.replaceAll("\\{\\{\\d*\\}\\}", "(.*)");
         String finalPattern = escapeSpecialCharacters(patternStr1, escapeCharSet2);
@@ -29,11 +32,10 @@ public class RegexSearch {
         List<String> params = new ArrayList<>(List.of("value_1", "value_2", "value_3"));
 
         if (StringUtils.isNotEmpty(finalPattern) && !"null".equals(finalPattern)) {
-            // System.out.println("Inside the match function for regex exp comparison");
             try {
                 Pattern pattern = Pattern.compile(finalPattern);
                 Matcher matcher = pattern.matcher(inputMsg);
-                if (matcher.matches()) {
+                while (matcher.matches()) {
                     // counter++;
 
                     Map<String, String> paramNames = new HashMap<String, String>();
@@ -45,9 +47,19 @@ public class RegexSearch {
                     return true;
                 }
                 if (index == 126) {
-                    System.out.println("\nThe input message : " + inputMsg + "\n");
-                    System.out.println("Pre Existing Template string : " + preExistingTemplateBody);
-                    System.out.println("Final Pattern for Id : " + index + " " + finalPattern + "\n");
+                    System.out.println("Input message after processing the escape characters: " + inputMsgProcessed);
+                    System.out.println("Pre Existing Template string : " +
+                            preExistingTemplateBody);
+                    System.out.println("Final Pattern for Id : " + index + " " + finalPattern +
+                            "\n");
+                    // Visualize step-by-step matching
+                    matcher = pattern.matcher(inputMsg);
+                    while (matcher.find()) {
+                        System.out.println("Partial match found:");
+                        System.out.println("Start index: " + matcher.start());
+                        System.out.println("End index: " + matcher.end());
+                        System.out.println("Matched text: " + matcher.group());
+                    }
                 }
 
             } catch (PatternSyntaxException exception) {
