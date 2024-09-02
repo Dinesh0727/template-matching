@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import com.tanla.template_matching.Utils.PreExistingTemplates;
 import com.tanla.template_matching.entity.Product;
 import com.tanla.template_matching.service.RegexSearch;
 
@@ -36,17 +37,6 @@ public class ApplicationStartupRunner implements CommandLineRunner {
         @Override
         public void run(String... args) throws IOException {
 
-                File file = new File(
-                                "/home/dinesh/docker/output-1.txt");
-                Scanner sc = new Scanner(file);
-
-                List<String> strings = new ArrayList<>();
-
-                while (sc.hasNextLine()) {
-                        strings.add(sc.nextLine());
-                }
-
-                sc.close();
                 String template_text_index = "template_texts_pre_prod";
 
                 createIndex(esClient, template_text_index);
@@ -56,7 +46,7 @@ public class ApplicationStartupRunner implements CommandLineRunner {
 
                 // Making Bulk Request to add data
 
-                bulkRequest(esClient, strings, template_text_index);
+                // bulkRequest(esClient, PreExistingTemplates.strings, template_text_index);
 
                 // String searchText = strings.get(12);
                 // String searchText = "We strongly advise you to buy promptly, emphasizing on
@@ -83,7 +73,7 @@ public class ApplicationStartupRunner implements CommandLineRunner {
                 moreLikeThisSearch(esClient, template_text_index,
                                 searchText);
 
-                existingSearch(searchText, strings);
+                existingSearch(searchText, PreExistingTemplates.strings);
 
         }
 

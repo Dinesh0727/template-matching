@@ -18,9 +18,6 @@ public class RegexSearch {
 
         String escapeCharSet2 = "{}";
 
-        String rawInputMsg = inputMsg.replace("\n", "\\n");
-        String inputMsgProcessed = escapeSpecialCharacters(rawInputMsg, escapeCharSet1);
-
         String x = escapeSpecialCharacters(preExistingTemplateBody, escapeCharSet1);
         String patternStr1 = x.replaceAll("\\{\\{\\d*\\}\\}", "(.*)");
         String finalPattern = escapeSpecialCharacters(patternStr1, escapeCharSet2);
@@ -43,23 +40,10 @@ public class RegexSearch {
                         paramNames.put(params.get(i) + "", matcher.group(i + 1));
                     }
                     System.out.println(paramNames);
-                    System.out.println("Found the appropriate template: \n" + preExistingTemplateBody);
+                    // System.out.println("Found the appropriate template: \n" +
+                    // preExistingTemplateBody);
+                    System.out.println("The template id : " + index);
                     return true;
-                }
-                if (index == 126) {
-                    System.out.println("Input message after processing the escape characters: " + inputMsgProcessed);
-                    System.out.println("Pre Existing Template string : " +
-                            preExistingTemplateBody);
-                    System.out.println("Final Pattern for Id : " + index + " " + finalPattern +
-                            "\n");
-                    // Visualize step-by-step matching
-                    matcher = pattern.matcher(inputMsg);
-                    while (matcher.find()) {
-                        System.out.println("Partial match found:");
-                        System.out.println("Start index: " + matcher.start());
-                        System.out.println("End index: " + matcher.end());
-                        System.out.println("Matched text: " + matcher.group());
-                    }
                 }
 
             } catch (PatternSyntaxException exception) {
