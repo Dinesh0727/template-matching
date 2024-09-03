@@ -42,7 +42,7 @@ public class RegexSearch {
                 Pattern pattern = Pattern.compile(finalPattern);
                 Matcher matcher = pattern.matcher(inputMsg);
                 while (matcher.matches()) {
-
+                    System.out.println("The matching template is : " + index);
                     Map<String, String> paramNames = new HashMap<String, String>();
                     for (int i = 0; i < params.size(); i++) {
                         paramNames.put(params.get(i) + "", matcher.group(i + 1));

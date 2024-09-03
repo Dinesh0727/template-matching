@@ -1,10 +1,32 @@
 package com.tanla.template_matching.Utils;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.core.exc.StreamReadException;
+import com.fasterxml.jackson.databind.DatabindException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tanla.template_matching.entity.Template;
+import com.tanla.template_matching.entity.Templates;
+
 public class PreExistingTemplates {
-    public static String templates_index = "template_texts_pre_prod";
+    public static String dummy_templates_index = "template_texts_pre_prod";
+
+    public static String templates_index = "template_texts";
+
+    public static String message = "As requested by you here is a stock recommendation.\n\nBuy ABC Corporation \nTarget price $120\nBuy now using this link www.example.com\n\nWarm Regards,\nTeam MOFSL";
+
+    public static String actualTemplateBody = "As requested by you here is a stock recommendation.\n\nBuy {{1}} \nTarget price {{2}}\nBuy now using this link {{3}}\n\nWarm Regards,\nTeam MOFSL";
+
+    public static List<Template> templates() throws StreamReadException, DatabindException, IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        InputStream is = new FileInputStream("/home/dinesh/docker/testing/all-templates.json");
+        Templates template = mapper.readValue(is, Templates.class);
+        return template.getTemplates();
+    }
 
     public static List<String> strings = new ArrayList<>(List.of(
             "As requested by you here is a stock recommendation.\n\nBuy {{1}} \nTarget price {{2}}\nBuy now using this link {{3}}\n\nWarm Regards,\nTeam MOFSL",
