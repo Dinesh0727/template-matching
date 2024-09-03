@@ -203,6 +203,9 @@ public class ElasticSearch {
             System.out.println("Found template " + template.getTemplate_name() + ", score " +
                     hit.score() + ", hitRank : " + hit.rank());
         }
+        System.out.println("======================");
+        System.out.println("======================");
+        System.out.println("The first fit is : " + hits.get(0).source().toString());
 
     }
 

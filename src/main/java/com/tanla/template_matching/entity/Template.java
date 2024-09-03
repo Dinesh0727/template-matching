@@ -1,5 +1,7 @@
 package com.tanla.template_matching.entity;
 
+import com.tanla.template_matching.Utils.StringUtil;
+
 public class Template {
     private String esmeaddr;
 
@@ -43,8 +45,8 @@ public class Template {
 
     @Override
     public String toString() {
-        return "Template [esmeaddr=" + esmeaddr + ", template_name=" + template_name + ", template_namespace_id="
-                + template_namespace_id + ", msg_body=" + msg_body + "]";
+        return "Template [esmeaddr=" + esmeaddr + ", \ntemplate_name=" + template_name + "\n, template_namespace_id="
+                + template_namespace_id + "\n, msg_body=\n" + StringUtil.escapeSpecialCharacters(msg_body, "\\") + "]";
     }
 
 }

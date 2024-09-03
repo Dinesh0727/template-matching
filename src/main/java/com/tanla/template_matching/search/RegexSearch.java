@@ -7,10 +7,7 @@ import com.tanla.template_matching.Utils.StringUtil;
 
 import io.micrometer.common.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 
 public class RegexSearch {

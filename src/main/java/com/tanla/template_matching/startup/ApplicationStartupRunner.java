@@ -34,11 +34,13 @@ public class ApplicationStartupRunner implements CommandLineRunner {
                         System.out.println("================================================");
                         System.out.println("================================================");
                         System.out.println("We are dealing with the input message : " + i);
-                        if (ElasticSearch.moreLikeThisTemplateSearch(esClient, Messages.exampleTexts.get(i),
-                                        indexNameLarge)) {
+                        if (ElasticSearch.moreLikeThisTemplateSearch(esClient, indexNameLarge,
+                                        Messages.exampleTexts.get(i))) {
                                 System.out.println("======================");
                                 System.out.println("======================");
-                                System.out.println("Found the template match for input message " + i);
+                                System.out.println("Actual matching template_name"
+                                                + Messages.exampleTextsTemplateNames.get(i));
+                                System.out.println("Actual matching template body \n" + Messages.exampleTexts.get(i));
                         }
                 }
 
