@@ -122,7 +122,35 @@ public class ElasticSearch {
         printResponseDetails(searchResponse);
     }
 
-    public static Template moreLikeThisTemplateSearch(ElasticsearchClient esClient, String template_text_index,
+    public static boolean moreLikeThisTemplateSearch(ElasticsearchClient esClient, String template_text_index,
+            String searchText) throws IOException {
+
+        final String MSG_BODY = "msg_body";
+        MoreLikeThisQuery mltQuery = MoreLikeThisQuery.of(mlt -> mlt
+                .fields(MSG_BODY)
+                .like(l -> l.text(searchText)));
+
+        SearchRequest searchRequest = SearchRequest.of(sr -> sr
+                .index(template_text_index)
+                .query(q -> q.moreLikeThis(mltQuery))
+                .size(3));
+
+        SearchResponse<Template> searchResponse = esClient.search(searchRequest, Template.class);
+
+        System.out.println("========================================================");
+        System.out.println("========================================================");
+        System.out.println("Calling the print reponse details function : ");
+        printTemplateSearchResponseDetails(searchResponse);
+
+        if (searchResponse.hits().total().value() == 0) {
+            System.out.println("There is no matching template through Elastic Search");
+            return false;
+        }
+
+        return true;
+    }
+
+    public static Template moreLikeThisTemplateSearchWithRegex(ElasticsearchClient esClient, String template_text_index,
             String searchText) throws IOException {
 
         final String MSG_BODY = "msg_body";
@@ -150,6 +178,11 @@ public class ElasticSearch {
                 }
             }
         }
+        System.out.println("========================================================");
+        System.out.println("========================================================");
+        System.out.println("Calling the print reponse details function : ");
+        printTemplateSearchResponseDetails(searchResponse);
+
         System.out.println("There is no matching template");
         return null;
     }
@@ -171,10 +204,6 @@ public class ElasticSearch {
                     hit.score() + ", hitRank : " + hit.rank());
         }
 
-        System.out.println("Regex Search with actual template");
-        System.out.println("Comparison result is : " + RegexSearch.matchTemplate(PreExistingTemplates.message,
-                PreExistingTemplates.actualTemplateBody, 100));
-
     }
 
     static void printResponseDetails(SearchResponse<Message> searchResponse) {
@@ -195,13 +224,13 @@ public class ElasticSearch {
         }
     }
 
-    public boolean search(ArrayList<Template> cacheTemplateList, ElasticsearchClient esClient, String inputMsg,
+    public static boolean search(ArrayList<Template> cacheTemplateList, ElasticsearchClient esClient, String inputMsg,
             String indexName)
             throws IOException {
 
         boolean foundTemplate = false;
         if (cacheTemplateList.isEmpty()) {
-            Template temp = searchInESDB(cacheTemplateList, esClient, inputMsg, indexName);
+            Template temp = searchInESDBWithRegex(cacheTemplateList, esClient, inputMsg, indexName);
             if (temp != null) {
                 cacheTemplateList.add(temp);
                 return true;
@@ -223,15 +252,15 @@ public class ElasticSearch {
             if (foundTemplate) {
                 return true;
             } else {
-                searchInESDB(cacheTemplateList, esClient, inputMsg, indexName);
+                searchInESDBWithRegex(cacheTemplateList, esClient, inputMsg, indexName);
             }
         }
         return false;
     }
 
-    private Template searchInESDB(ArrayList<Template> cacheTemplateList, ElasticsearchClient esClient,
+    static Template searchInESDBWithRegex(ArrayList<Template> cacheTemplateList, ElasticsearchClient esClient,
             String inputMsg, String indexName) throws IOException {
-        Template searchedTemplate = moreLikeThisTemplateSearch(esClient,
+        Template searchedTemplate = moreLikeThisTemplateSearchWithRegex(esClient,
                 indexName, inputMsg);
         if (searchedTemplate != null) {
             // add the template message in the cache template
@@ -245,4 +274,5 @@ public class ElasticSearch {
         }
         return null;
     }
+
 }

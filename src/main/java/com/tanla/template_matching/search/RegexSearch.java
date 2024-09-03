@@ -35,17 +35,18 @@ public class RegexSearch {
             return false; // continue with the next template
         }
 
-        List<String> params = new ArrayList<>(List.of("value_1", "value_2", "value_3"));
-
         if (StringUtils.isNotEmpty(finalPattern) && !"null".equals(finalPattern)) {
             try {
                 Pattern pattern = Pattern.compile(finalPattern);
                 Matcher matcher = pattern.matcher(inputMsg);
                 while (matcher.matches()) {
-                    System.out.println("The matching template is : " + index);
-                    Map<String, String> paramNames = new HashMap<String, String>();
-                    for (int i = 0; i < params.size(); i++) {
-                        paramNames.put(params.get(i) + "", matcher.group(i + 1));
+                    int count = matcher.groupCount();
+                    String[] params = new String[count];
+                    for (int i = 0; i < count; i++) {
+                        params[i] = matcher.group(i + 1);
+                    }
+                    for (String x : params) {
+                        System.out.println(x);
                     }
                     return true;
                 }

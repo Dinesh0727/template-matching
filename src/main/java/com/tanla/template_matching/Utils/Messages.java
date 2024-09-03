@@ -29,7 +29,7 @@ public class Messages {
                         "Oi João Pereira, tudo ótimo?\n\nVocê mandou muito bem no ProviHack4Good e olha só... a empresa Tech Solutions está querendo bater um papo com você. No link abaixo você terá acesso à agenda da pessoa recrutadora dessa empresa. Escolha o melhor horário para você. Se prepare e boa sorte!\n\nEntre neste link e arrase: https://www.example.com/agenda",
                         "Dear Alex Carter,\n\nAs requested by you, Motilal Oswal brings to you MO Research - Commodity Option's Idea.\n\nWe recommend to Alex Carter, Buy Gold Futures at $1,800, Target Price: $1,850, Stop Loss: $1,780, Generated on : September 30, 2024\n\nPlace your trade through MO Investor App https://www.example.com/investor-app or MO Trader App https://www.example.com/trader-app now!\n\nWarm Regards,\nTeam MOFSL");
 
-        List<String> exampleTexts = List.of(
+        public static List<String> exampleTexts = List.of(
                         "As requested by you here is a stock recommendation.\n\nBuy ABC Corp\nTarget price 1500\nBuy now using this link www.stocklink.com\n\nWarm Regards,\nTeam MOFSL",
                         "As requested by you here is a stock recommendation.\n\nBuy XYZ Ltd\nTarget price 1200\nBuy now using this link www.tradelink.com\n\nWarm Regards,\nTeam MOFSL",
 
@@ -69,7 +69,8 @@ public class Messages {
                         "Hello from redBus!\n\nWe are delighted that you chose to travel with us.\n\nYour bus booking from New York to Washington is confirmed with Greyhound for 05-Sep-2024 at 10:00 AM.\n\nHere are the details:\n\nTicket No: 12345\nBus Operator: Greyhound\nSeat No: 12\nDate: 05-Sep-2024\nTime: 10:00 AM\n\nPlease reach the boarding point 15 minutes before departure.\n\nThank you,\nTeam redBus",
                         "Hello from redBus!\n\nWe are delighted that you chose to travel with us.\n\nYour bus booking from Los Angeles to San Francisco is confirmed with Megabus for 10-Sep-2024 at 08:00 PM.\n\nHere are the details:\n\nTicket No: 67890\nBus Operator: Megabus\nSeat No: 5\nDate: 10-Sep-2024\nTime: 08:00 PM\n\nPlease reach the boarding point 15 minutes before departure.\n\nThank you,\nTeam redBus");
 
-        List<String> exampleTextsTeplateName = List.of("alert_1", "alert_1", "commodity_0630", "commodity_0630",
+        public static List<String> exampleTextsTemplateNames = List.of("alert_1", "alert_1", "commodity_0630",
+                        "commodity_0630",
                         "existing_customer_001", "existing_customer_001", "au_drive", "au_drive", "vw45", "vw45",
                         "teacher_slots_new", "teacher_slots_new", "trial_certificate_unlock",
                         "trial_certificate_unlock", "trial_com_24hours_new_apt", "trial_com_24hours_new_apt",
