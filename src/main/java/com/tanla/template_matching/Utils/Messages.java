@@ -67,7 +67,40 @@ public class Messages {
                         "We recommend to Sell Oil Futures at 70, Target Price: 75, Stop Loss: 65, Generated on: 02-Sep-2024.\n\nPlace your trade through MO Investor App www.tradewithus.com or MO Trader App www.tradeeasy.com today.\n\nWarm Regards,\nTeam MOFSL",
 
                         "Hello from redBus!\n\nWe are delighted that you chose to travel with us.\n\nYour bus booking from New York to Washington is confirmed with Greyhound for 05-Sep-2024 at 10:00 AM.\n\nHere are the details:\n\nTicket No: 12345\nBus Operator: Greyhound\nSeat No: 12\nDate: 05-Sep-2024\nTime: 10:00 AM\n\nPlease reach the boarding point 15 minutes before departure.\n\nThank you,\nTeam redBus",
-                        "Hello from redBus!\n\nWe are delighted that you chose to travel with us.\n\nYour bus booking from Los Angeles to San Francisco is confirmed with Megabus for 10-Sep-2024 at 08:00 PM.\n\nHere are the details:\n\nTicket No: 67890\nBus Operator: Megabus\nSeat No: 5\nDate: 10-Sep-2024\nTime: 08:00 PM\n\nPlease reach the boarding point 15 minutes before departure.\n\nThank you,\nTeam redBus");
+                        "Hello from redBus!\n\nWe are delighted that you chose to travel with us.\n\nYour bus booking from Los Angeles to San Francisco is confirmed with Megabus for 10-Sep-2024 at 08:00 PM.\n\nHere are the details:\n\nTicket No: 67890\nBus Operator: Megabus\nSeat No: 5\nDate: 10-Sep-2024\nTime: 08:00 PM\n\nPlease reach the boarding point 15 minutes before departure.\n\nThank you,\nTeam redBus",
+
+                        "Dear John Doe, \n\nCongratulations! It is our privilege to welcome you to Motilal Oswal family! \nThank you for choosing us as your investment partner. Your account is successfully activated and your Client Code to operate this account is ABC123.\n\nTo help you get started with your account, we would like to give you information about our wide range of platforms and products for better trading experience. Click here to know more details: www.example.com \n\nJust 3 simple steps to Login into our Apps\n1. Download MO Investor App: www.investorapp.com or MO Trader App: www.traderapp.com\n2. Click Login to trade from the Main Menu\n3. Login with your Client Code or Registered Mobile Number or Email ID and Password\n(You can create a password using 'Generate Password' option)\n\nHappy Trading!\n\nWarm Regards,\nTeam MOFSL",
+                        "Dear Jane Smith, \n\nCongratulations! It is our privilege to welcome you to Motilal Oswal family! \nThank you for choosing us as your investment partner. Your account is successfully activated and your Client Code to operate this account is XYZ789.\n\nTo help you get started with your account, we would like to give you information about our wide range of platforms and products for better trading experience. Click here to know more details: www.info.com \n\nJust 3 simple steps to Login into our Apps\n1. Download MO Investor App: www.downloadinvestor.com or MO Trader App: www.downloadtrader.com\n2. Click Login to trade from the Main Menu\n3. Login with your Client Code or Registered Mobile Number or Email ID and Password\n(You can create a password using 'Generate Password' option)\n\nHappy Trading!\n\nWarm Regards,\nTeam MOFSL",
+
+                        "We recommend to Buy, BANKNIFTY, FUT Sep at 40000, Target Price: 40500, Stop Loss: 39500, Generated on: 2023-09-01.\n\nPlace your trade through MO Investor App www.investorapp.com or MO Trader App www.traderapp.com today.\n\nWarm Regards,\nTeam MOFSL",
+                        "We recommend to Sell, BANKNIFTY, FUT Dec at 41000, Target Price: 41500, Stop Loss: 40500, Generated on: 2023-09-02.\n\nPlace your trade through MO Investor App www.tradewithmo.com or MO Trader App www.traderwithmo.com today.\n\nWarm Regards,\nTeam MOFSL",
+
+                        "?? !! \u0930\u0948\u092a\u0940\u0921\u094b \u0921\u092c\u0932 \u0907\u0928\u094d\u0938\u0947\u0902\u091f\u093f\u0935 \u0927\u092e\u093e\u0915\u093e !!?? !!\n!! \u0905\u092c \u0905\u0927\u093f\u0915 \u0938\u0947 \u0905\u0927\u093f\u0915 \u0930\u093e\u0907\u0921 \u0915\u0930\u0947\u0902 \u0914\u0930 \u0926\u0948\u0928\u093f\u0915 \u0914\u0930 \u0938\u093e\u092a\u094d\u0924\u093e\u0939\u093f\u0915 \u0907\u0928\u094d\u0938\u0947\u0902\u091f\u093f\u0935 \u0915\u092e\u093e\u0907\u090f !! \u0917\u094b \u0930\u0948\u092a\u093f\u0921\u094b ||",
+                        "?? !! \u0921\u093f\u091c\u093f\u091f\u0932 \u092c\u093e\u0917 \u0907\u0928\u094d\u0938\u0947\u0902\u091f\u093f\u0935 \u0926\u093f\u092f\u093e \u0927\u092e\u093e\u0915\u093e !!?? !!\n!! \u0927\u093f\u092f\u093e\u0928 \u0915\u0930\u094b \u0914\u0930 \u0932\u092d\u093f\u0924 \u0915\u0930\u094b \u0917\u094b \u0921\u093f\u091c\u093f\u091f\u0932 \u0917\u092e\u093f\u0902\u0917 \u0915\u0930\u094b ||",
+
+                        "*RAPIDO BUMPER INCENTIVE WEEK!*\nOffer\n Weekly incentives up to *\u20b91000/- on 50 rides.* So why wait, *#GoRapido!*\n\nWe promise we will not SPAM you. If you wish to stop receiving communications, enter *STOP*",
+                        "*RAPIDO BUMPER INCENTIVE WEEK!*\nPromo\n Weekly incentives up to *\u20b92000/- on 100 rides.* So why wait, *#GoRapido!*\n\nWe promise we will not SPAM you. If you wish to stop receiving communications, enter *STOP*",
+
+                        "Dear Raj,\n\nThank you for booking your bus ticket from Delhi to Mumbai with redBus.\n\nFor the best travel experience and to manage your booking online, download the redBus app now ??\nhttps://play.google.com/store/apps/details?id=in.redbus.android",
+                        "Dear Priya,\n\nThank you for booking your bus ticket from Bangalore to Hyderabad with redBus.\n\nFor the best travel experience and to manage your booking online, download the redBus app now ??\nhttps://play.google.com/store/apps/details?id=in.redbus.android",
+
+                        "Dear User (12345) ,You have not updated your ID and address proof. Please do the same as soon as possible to prevent de-activation.\nEmail:support@seatseller.travel | Call: 080-46190905 | www.seatseller.travel.\nRegards  Team Seatseller",
+                        "Dear Customer (54321) ,You have not updated your ID and address proof. Please do the same as soon as possible to prevent de-activation.\nEmail:support@seatseller.travel | Call: 080-46190905 | www.seatseller.travel.\nRegards  Team Seatseller",
+
+                        "Dear Vinay,\n\nThank you for booking your bus ticket from Pune to Goa with redBus.\n\nFor the best travel experience and to manage your booking online, download the redBus app now ??\nwww.redbus.in",
+                        "Dear Ananya,\n\nThank you for booking your bus ticket from Chennai to Coimbatore with redBus.\n\nFor the best travel experience and to manage your booking online, download the redBus app now ??\nwww.redbus.com",
+
+                        "Hi John,\n\nPre-book Jane’s future classes easily with the Class Scheduler now. Access our new feature via the dashboard.\n\nClick on the link below to explore our new feature ?\n\nwww.examplelink.com\n\nRegularly scheduled classes help students develop a healthy habit of learning. Get started today!",
+                        "Hi Smith,\n\nPre-book Alex’s future classes easily with the Class Scheduler now. Access our new feature via the dashboard.\n\nClick on the link below to explore our new feature ?\n\nwww.anotherlink.com\n\nRegularly scheduled classes help children develop a healthy habit of learning. Get started today!",
+
+                        "Hello\n\nWe are happy to confirm your \nappointment with us.\n\nThe details are as following:\nClient ID : 001122\nDate : 2024-09-10\nMode : Online\nCounsellor : Dr. Sharma \n\n- Team Samarpan  \n\nCall Support : 1800-2100-220\nWebsite : https://samarpan.in/",
+                        "Hello\n\nWe are happy to confirm your \nappointment with us.\n\nThe details are as following:\nClient ID : 334455\nDate : 2024-09-15\nMode : In-person\nCounsellor : Ms. Kapoor \n\n- Team Samarpan  \n\nCall Support : 1800-2100-220\nWebsite : https://samarpan.in/",
+
+                        "Hi Raj\nThis Pujo come celebrate a melodious evening with your near & dear ones @ your fav Shoppers Stop Kolkata\nMusic Night starting at 7 PM on 2024-10-10\nFor further details call 1234567890.",
+                        "Hi Priya\nThis Pujo come celebrate a melodious evening with your near & dear ones @ your fav Shoppers Stop Mumbai\nCultural Fest starting at 6 PM on 2024-10-15\nFor further details call 0987654321.",
+
+                        "September Month First challenge of #HipiStunner is here. *Style yourself as your favourite actor* and stand a chance to walk the red carpet of Zee cine awards and win cash prize of 1 lac by uploading your videos on the Hipi app and use #HipiStunner hashtag to participate.\n\nParticipate Now!",
+                        "September Month First challenge of #HipiStunner is here. *Style yourself as your favourite character* and stand a chance to walk the red carpet of Zee cine awards and win cash prize of 50k by uploading your videos on the Hipi app and use #HipiStunner hashtag to participate.\n\nParticipate Now!");
 
         public static List<String> exampleTextsTemplateNames = List.of("alert_1", "alert_1", "commodity_0630",
                         "commodity_0630",
@@ -75,6 +108,12 @@ public class Messages {
                         "teacher_slots_new", "teacher_slots_new", "trial_certificate_unlock",
                         "trial_certificate_unlock", "trial_com_24hours_new_apt", "trial_com_24hours_new_apt",
                         "hack4_provi", "hack4_provi", "enquiry_update_rcnt", "enquiry_update_rcnt", "app_1", "app_1",
-                        "invest_idea", "invest_idea", "latam_mticket_copax_en", "latam_mticket_copax_en");
+                        "invest_idea", "invest_idea", "latam_mticket_copax_en", "latam_mticket_copax_en",
+                        "digital_offering", "digital_offering", "intraday_future_idea", "intraday_future_idea",
+                        "mum_inactive7mp_hp", "mum_inactive7mp_hp", "weekly_incentive_6thoct",
+                        "weekly_incentive_6thoct", "mticket_nonapp_boooking", "mticket_nonapp_boooking",
+                        "seatseller_wtsup_21", "seatseller_wtsup_21", "appinstall_wa1", "appinstall_wa1",
+                        "schedulermard", "schedulermard", "appointment_confirmation", "appointment_confirmation",
+                        "eastfest", "eastfest", "stunner_marketing05aug_1", "stunner_marketing05aug_1");
 
 }

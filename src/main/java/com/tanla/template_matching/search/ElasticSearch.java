@@ -2,11 +2,11 @@ package com.tanla.template_matching.search;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import java.util.concurrent.TimeUnit;
 
-import com.tanla.template_matching.Utils.PreExistingTemplates;
 import com.tanla.template_matching.entity.Message;
 import com.tanla.template_matching.entity.Template;
 
@@ -128,12 +128,15 @@ public class ElasticSearch {
         final String MSG_BODY = "msg_body";
         MoreLikeThisQuery mltQuery = MoreLikeThisQuery.of(mlt -> mlt
                 .fields(MSG_BODY)
-                .like(l -> l.text(searchText)));
+                .like(l -> l.text(searchText))
+                .minTermFreq(1)
+                .minDocFreq(2)
+                .stopWords(Arrays.asList("a", "the", "and", "of", "in")));
 
         SearchRequest searchRequest = SearchRequest.of(sr -> sr
                 .index(template_text_index)
                 .query(q -> q.moreLikeThis(mltQuery))
-                .size(3));
+                .size(10));
 
         SearchResponse<Template> searchResponse = esClient.search(searchRequest, Template.class);
 
@@ -142,6 +145,9 @@ public class ElasticSearch {
         System.out.println("Calling the print reponse details function : ");
         printTemplateSearchResponseDetails(searchResponse);
 
+        // System.out.println("========================================================");
+        // System.out.println("========================================================");
+        // System.out.println("Printing the search text" + "\n " + searchText);
         if (searchResponse.hits().total().value() == 0) {
             System.out.println("There is no matching template through Elastic Search");
             return false;
@@ -200,12 +206,12 @@ public class ElasticSearch {
         List<Hit<Template>> hits = searchResponse.hits().hits();
         for (Hit<Template> hit : hits) {
             Template template = hit.source();
-            System.out.println("Found template " + template.getTemplate_name() + ", score " +
-                    hit.score() + ", hitRank : " + hit.rank());
+            System.out.println("Found template " + template.getTemplate_name() + ", score" + hit.score()
+                    + ", hitRank : " + hit.rank());
         }
         System.out.println("======================");
         System.out.println("======================");
-        System.out.println("The first fit is : " + hits.get(0).source().toString());
+        System.out.println("The first fit template_name is : " + hits.get(0).source().getTemplate_name());
 
     }
 
