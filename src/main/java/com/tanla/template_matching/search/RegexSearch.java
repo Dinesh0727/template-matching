@@ -3,6 +3,9 @@ package com.tanla.template_matching.search;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.tanla.template_matching.Utils.StringUtil;
 
 import io.micrometer.common.util.StringUtils;
@@ -11,6 +14,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 public class RegexSearch {
+
+    private static Logger logger = LogManager.getLogger(RegexSearch.class);
 
     public static void regexSearch(String searchText, List<String> strings) {
         int i = 0;
@@ -32,6 +37,10 @@ public class RegexSearch {
             return false; // continue with the next template
         }
 
+        // logger.info("The input message is : " + inputMsg);
+        // logger.info("The preExisingTemplate is : " + preExistingTemplateBody);
+        // logger.info("Final Pattern after replacing everything is : " + finalPattern);
+
         if (StringUtils.isNotEmpty(finalPattern) && !"null".equals(finalPattern)) {
             try {
                 Pattern pattern = Pattern.compile(finalPattern);
@@ -42,9 +51,9 @@ public class RegexSearch {
                     for (int i = 0; i < count; i++) {
                         params[i] = matcher.group(i + 1);
                     }
-                    for (String x : params) {
-                        System.out.println(x);
-                    }
+                    // for (String x : params) {
+                    // System.out.println(x);
+                    // }
                     return true;
                 }
 

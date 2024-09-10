@@ -4,8 +4,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.tanla.template_matching.entity.Message;
 import com.tanla.template_matching.entity.Template;
@@ -13,7 +16,9 @@ import com.tanla.template_matching.entity.Template;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._helpers.bulk.BulkIngester;
 import co.elastic.clients.elasticsearch._types.ElasticsearchException;
+import co.elastic.clients.elasticsearch._types.Script;
 import co.elastic.clients.elasticsearch._types.query_dsl.MoreLikeThisQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.ScriptQuery;
 import co.elastic.clients.elasticsearch.core.BulkRequest;
 import co.elastic.clients.elasticsearch.core.BulkResponse;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
@@ -23,8 +28,11 @@ import co.elastic.clients.elasticsearch.core.search.Hit;
 import co.elastic.clients.elasticsearch.core.search.TotalHits;
 import co.elastic.clients.elasticsearch.core.search.TotalHitsRelation;
 import co.elastic.clients.elasticsearch.indices.ExistsRequest;
+import co.elastic.clients.json.JsonData;
 
 public class ElasticSearch {
+
+    private static Logger logger = LogManager.getLogger(ElasticSearch.class);
 
     public static void createIndex(ElasticsearchClient esClient, String indexName) throws IOException {
         if (!esClient.indices().exists(ExistsRequest.of(e -> e.index(indexName))).value())
@@ -58,8 +66,8 @@ public class ElasticSearch {
     public static void bulkRequest_templates(ElasticsearchClient esClient, List<Template> templates,
             String templates_index) {
 
-        System.out.println("Starting the bulk request through ingestor");
-        System.out.println("Size of the templates list: " + templates.size());
+        logger.info("Starting the bulk request through ingestor");
+        logger.info("Size of the templates list: " + templates.size());
 
         long flushInterval = 2;
 
@@ -83,7 +91,7 @@ public class ElasticSearch {
     public static void deleteDocument(ElasticsearchClient esClient, String deleteDocumentId, String index)
             throws ElasticsearchException, IOException {
         if ("not_found".equals(esClient.index(idx -> idx.index(index).id(deleteDocumentId)).result().name())) {
-            System.out.println("Document Not Found with Id " + deleteDocumentId);
+            logger.info("Document Not Found with Id " + deleteDocumentId);
             return;
         }
         esClient.delete(del -> del.index(index).id(deleteDocumentId));
@@ -101,7 +109,7 @@ public class ElasticSearch {
                                 .query(searchText))),
                 Message.class);
         long end = System.currentTimeMillis();
-        System.out.println("Time to Complete the normal search is : " + (end - start));
+        logger.info("Time to Complete the normal search is : " + (end - start));
 
         printResponseDetails(result);
         System.out.print("===========================================================\n");
@@ -123,33 +131,49 @@ public class ElasticSearch {
     }
 
     public static boolean moreLikeThisTemplateSearch(ElasticsearchClient esClient, String template_text_index,
-            String searchText) throws IOException {
+            String searchText, Integer numberOfHitsToBeConsidered) throws IOException {
 
         final String MSG_BODY = "msg_body";
+
+        Integer searchTextWordCount = searchText.split(" ").length;
+
         MoreLikeThisQuery mltQuery = MoreLikeThisQuery.of(mlt -> mlt
                 .fields(MSG_BODY)
                 .like(l -> l.text(searchText))
+                .boost(Float.valueOf(2))
                 .minTermFreq(1)
-                .minDocFreq(2)
-                .stopWords(Arrays.asList("a", "the", "and", "of", "in")));
+                .minDocFreq(2));
+
+        Script script = Script.of(
+                s -> s.lang("painless")
+                        .source("doc['msg_body'] >= params.searchTextWordCount")
+                        .params("searchTextWordCount", JsonData.fromJson(searchTextWordCount.toString())));
+
+        ScriptQuery scriptQuery = ScriptQuery.of(sq -> sq.script(script));
 
         SearchRequest searchRequest = SearchRequest.of(sr -> sr
                 .index(template_text_index)
-                .query(q -> q.moreLikeThis(mltQuery))
-                .size(10));
+                .query(q -> q.bool(b -> b
+                        .must(m -> m
+                                .moreLikeThis(mltQuery))
+                        .filter(f -> f.script(scriptQuery))))
+                .size(numberOfHitsToBeConsidered));
 
+        long start = System.currentTimeMillis();
         SearchResponse<Template> searchResponse = esClient.search(searchRequest, Template.class);
+        long end = System.currentTimeMillis();
+        logger.info("The searching time is : " + (end - start) + "ms");
 
-        System.out.println("========================================================");
-        System.out.println("========================================================");
-        System.out.println("Calling the print reponse details function : ");
+        logger.info("========================================================");
+        logger.info("========================================================");
+        logger.info("Calling the print reponse details function : ");
         printTemplateSearchResponseDetails(searchResponse);
 
-        // System.out.println("========================================================");
-        // System.out.println("========================================================");
-        // System.out.println("Printing the search text" + "\n " + searchText);
+        // logger.info("========================================================");
+        // logger.info("========================================================");
+        // logger.info("Printing the search text" + "\n " + searchText);
         if (searchResponse.hits().total().value() == 0) {
-            System.out.println("There is no matching template through Elastic Search");
+            logger.info("There is no matching template through Elastic Search");
             return false;
         }
 
@@ -179,17 +203,17 @@ public class ElasticSearch {
             for (int i = 0; i < hits.size(); i++) {
                 Template template = hits.get(i).source();
                 if (RegexSearch.matchTemplate(searchText, template.getMsg_body(), i)) {
-                    System.out.println("Got the perfect match with hit number : " + i + 1);
+                    logger.info("Got the perfect match with hit number : " + i + 1);
                     return template;
                 }
             }
         }
-        System.out.println("========================================================");
-        System.out.println("========================================================");
-        System.out.println("Calling the print reponse details function : ");
+        logger.info("========================================================");
+        logger.info("========================================================");
+        logger.info("Calling the print reponse details function : ");
         printTemplateSearchResponseDetails(searchResponse);
 
-        System.out.println("There is no matching template");
+        logger.info("There is no matching template");
         return null;
     }
 
@@ -198,20 +222,20 @@ public class ElasticSearch {
         boolean isExactResult = total.relation() == TotalHitsRelation.Eq;
 
         if (isExactResult) {
-            System.out.println("There are " + total.value() + " results");
+            logger.info("There are " + total.value() + " results");
         } else {
-            System.out.println("There are more than " + total.value() + " results");
+            logger.info("There are more than " + total.value() + " results");
         }
 
         List<Hit<Template>> hits = searchResponse.hits().hits();
         for (Hit<Template> hit : hits) {
             Template template = hit.source();
-            System.out.println("Found template " + template.getTemplate_name() + ", score" + hit.score()
+            logger.info("Found template " + template.getTemplate_name() + ", score: " + hit.score()
                     + ", hitRank : " + hit.rank());
         }
-        System.out.println("======================");
-        System.out.println("======================");
-        System.out.println("The first fit template_name is : " + hits.get(0).source().getTemplate_name());
+        logger.info("======================");
+        logger.info("======================");
+        logger.info("The first fit template_name is : " + hits.get(0).source().getTemplate_name());
 
     }
 
@@ -220,15 +244,15 @@ public class ElasticSearch {
         boolean isExactResult = total.relation() == TotalHitsRelation.Eq;
 
         if (isExactResult) {
-            System.out.println("There are " + total.value() + " results");
+            logger.info("There are " + total.value() + " results");
         } else {
-            System.out.println("There are more than " + total.value() + " results");
+            logger.info("There are more than " + total.value() + " results");
         }
 
         List<Hit<Message>> hits = searchResponse.hits().hits();
         for (Hit<Message> hit : hits) {
             Message product = hit.source();
-            System.out.println("Found product " + product.getId() + ", score " +
+            logger.info("Found product " + product.getId() + ", score " +
                     hit.score() + ", hitRank : " + hit.rank());
         }
     }
@@ -246,7 +270,7 @@ public class ElasticSearch {
             } else {
                 // Later if th approach works add the code for adding template in elastic search
                 // database
-                System.out.println(
+                logger.info(
                         "No match found in Elastic Search database so we have to add a new template in ES DB itself");
             }
         } else {
@@ -278,7 +302,7 @@ public class ElasticSearch {
         } else {
             // Later if th approach works add the code for adding template in elastic search
             // database
-            System.out.println(
+            logger.info(
                     "No match found in Elastic Search database so we have to add a new template in ES DB itself");
         }
         return null;
