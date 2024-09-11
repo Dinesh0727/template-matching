@@ -18,6 +18,7 @@ import co.elastic.clients.elasticsearch._helpers.bulk.BulkIngester;
 import co.elastic.clients.elasticsearch._types.ElasticsearchException;
 import co.elastic.clients.elasticsearch._types.Script;
 import co.elastic.clients.elasticsearch._types.query_dsl.MoreLikeThisQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.RangeQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.ScriptQuery;
 import co.elastic.clients.elasticsearch.core.BulkRequest;
 import co.elastic.clients.elasticsearch.core.BulkResponse;
@@ -135,7 +136,44 @@ public class ElasticSearch {
 
         final String MSG_BODY = "msg_body";
 
-        Integer searchTextWordCount = searchText.split(" ").length;
+        MoreLikeThisQuery mltQuery = MoreLikeThisQuery.of(mlt -> mlt
+                .fields(MSG_BODY)
+                .like(l -> l.text(searchText))
+                .minTermFreq(1)
+                .minDocFreq(2)
+                .stopWords(Arrays.asList("a", "the", "and", "of", "in")));
+
+        SearchRequest searchRequest = SearchRequest.of(sr -> sr
+                .index(template_text_index)
+                .query(q -> q.moreLikeThis(mltQuery))
+                .size(numberOfHitsToBeConsidered));
+
+        long start = System.currentTimeMillis();
+        SearchResponse<Template> searchResponse = esClient.search(searchRequest, Template.class);
+        long end = System.currentTimeMillis();
+        logger.info("The searching time is : " + (end - start) + "ms");
+
+        logger.info("========================================================");
+        logger.info("========================================================");
+        logger.info("Calling the print response details function : ");
+        printTemplateSearchResponseDetails(searchResponse);
+
+        // logger.info("========================================================");
+        // logger.info("========================================================");
+        // logger.info("Printing the search text" + "\n " + searchText);
+        if (searchResponse.hits().total().value() == 0) {
+            logger.info("There is no matching template through Elastic Search");
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean moreLikeThisTemplateSearchWithRangeQuery(ElasticsearchClient esClient,
+            String template_text_index,
+            String searchText, Integer numberOfHitsToBeConsidered) throws IOException {
+
+        final String MSG_BODY = "msg_body";
 
         MoreLikeThisQuery mltQuery = MoreLikeThisQuery.of(mlt -> mlt
                 .fields(MSG_BODY)
@@ -144,19 +182,15 @@ public class ElasticSearch {
                 .minTermFreq(1)
                 .minDocFreq(2));
 
-        Script script = Script.of(
-                s -> s.lang("painless")
-                        .source("doc['msg_body'] >= params.searchTextWordCount")
-                        .params("searchTextWordCount", JsonData.fromJson(searchTextWordCount.toString())));
+        RangeQuery rangeQuery = RangeQuery.of(r -> r
+                .number(n -> n.field("word_count").gte(Double.valueOf(searchText.split(" ").length))));
 
-        ScriptQuery scriptQuery = ScriptQuery.of(sq -> sq.script(script));
-
-        SearchRequest searchRequest = SearchRequest.of(sr -> sr
+        SearchRequest searchRequest = SearchRequest.of(s -> s
                 .index(template_text_index)
-                .query(q -> q.bool(b -> b
-                        .must(m -> m
-                                .moreLikeThis(mltQuery))
-                        .filter(f -> f.script(scriptQuery))))
+                .query(q -> q
+                        .bool(b -> b
+                                .must(m -> m.moreLikeThis(mltQuery))
+                                .filter(r -> r.range(rangeQuery))))
                 .size(numberOfHitsToBeConsidered));
 
         long start = System.currentTimeMillis();
@@ -227,17 +261,17 @@ public class ElasticSearch {
             logger.info("There are more than " + total.value() + " results");
         }
 
-        // List<Hit<Template>> hits = searchResponse.hits().hits();
-        // for (Hit<Template> hit : hits) {
-        // Template template = hit.source();
-        // logger.info("Found template " + template.getTemplate_name() + ", score: " +
-        // hit.score()
-        // + ", hitRank : " + hit.rank());
-        // }
-        // logger.info("======================");
-        // logger.info("======================");
-        // logger.info("The first fit template_name is : " +
-        // hits.get(0).source().getTemplate_name());
+        List<Hit<Template>> hits = searchResponse.hits().hits();
+        for (Hit<Template> hit : hits) {
+            Template template = hit.source();
+            logger.info("Found template " + template.getTemplate_name() + ", score: " +
+                    hit.score()
+                    + ", hitRank : " + hit.rank());
+        }
+        logger.info("======================");
+        logger.info("======================");
+        logger.info("The first fit template_name is : " +
+                hits.get(0).source().getTemplate_name());
 
     }
 

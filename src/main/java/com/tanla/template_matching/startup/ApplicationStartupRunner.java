@@ -38,22 +38,22 @@ public class ApplicationStartupRunner implements CommandLineRunner {
                 Integer numberOfHitsToBeConsidered = 3;
                 // int i = 24;
                 // Using without regex elastic search
-                // for (int i = 0; i < InputData2.requestInputMsg.size(); i++) {
-                logger.info("================================================");
-                logger.info("================================================");
-                logger.info("We are dealing with the input message : " + 40);
-                present_template_name = InputData2.templateNames.get(40);
-                if (ElasticSearch.moreLikeThisTemplateSearch(esClient,
-                                prod_template_index_name,
-                                InputData2.requestInputMsg.get(40), numberOfHitsToBeConsidered)) {
-                        logger.info("======================");
-                        logger.info("======================");
-                        logger.info("Actual matching template_name is : "
-                                        + present_template_name);
-                        // logger.info("Actual matching template body \n" +
-                        // Messages.exampleTexts.get(i));
+                for (int i = 0; i < InputData2.requestInputMsg.size(); i++) {
+                        logger.info("================================================");
+                        logger.info("================================================");
+                        logger.info("We are dealing with the input message : " + i);
+                        present_template_name = InputData2.templateNames.get(i);
+                        if (ElasticSearch.moreLikeThisTemplateSearchWithRangeQuery(esClient,
+                                        prod_template_index_name,
+                                        InputData2.requestInputMsg.get(i), numberOfHitsToBeConsidered)) {
+                                logger.info("======================");
+                                logger.info("======================");
+                                logger.info("Actual matching template_name is : "
+                                                + present_template_name);
+                                // logger.info("Actual matching template body \n" +
+                                // Messages.exampleTexts.get(i));
+                        }
                 }
-                // }
 
                 // // Using regex search on the actual templates
                 // logger.info("Matching Regex Search over the correct templates");
