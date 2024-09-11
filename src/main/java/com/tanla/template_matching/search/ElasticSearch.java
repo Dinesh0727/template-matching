@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.tanla.template_matching.entity.Message;
 import com.tanla.template_matching.entity.Template;
+import com.tanla.template_matching.startup.ApplicationStartupRunner;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._helpers.bulk.BulkIngester;
@@ -132,7 +133,8 @@ public class ElasticSearch {
     }
 
     public static boolean moreLikeThisTemplateSearch(ElasticsearchClient esClient, String template_text_index,
-            String searchText, Integer numberOfHitsToBeConsidered) throws IOException {
+            String searchText, Integer numberOfHitsToBeConsidered, String actual_template_name)
+            throws IOException {
 
         final String MSG_BODY = "msg_body";
 
@@ -151,12 +153,18 @@ public class ElasticSearch {
         long start = System.currentTimeMillis();
         SearchResponse<Template> searchResponse = esClient.search(searchRequest, Template.class);
         long end = System.currentTimeMillis();
-        logger.info("The searching time is : " + (end - start) + "ms");
 
-        logger.info("========================================================");
-        logger.info("========================================================");
-        logger.info("Calling the print response details function : ");
-        printTemplateSearchResponseDetails(searchResponse);
+        String template_name = searchResponse.hits().hits().get(0).source().getTemplate_name();
+        // logger.info("The first fit template_name : " + template_name);
+        if (template_name.equals(actual_template_name)) {
+            ApplicationStartupRunner.counter++;
+        }
+        // logger.info("The searching time is : " + (end - start) + "ms");
+
+        // logger.info("========================================================");
+        // logger.info("========================================================");
+        // logger.info("Calling the print response details function : ");
+        // printTemplateSearchResponseDetails(searchResponse);
 
         // logger.info("========================================================");
         // logger.info("========================================================");
@@ -171,7 +179,8 @@ public class ElasticSearch {
 
     public static boolean moreLikeThisTemplateSearchWithRangeQuery(ElasticsearchClient esClient,
             String template_text_index,
-            String searchText, Integer numberOfHitsToBeConsidered) throws IOException {
+            String searchText, Integer numberOfHitsToBeConsidered, String actual_template)
+            throws IOException {
 
         final String MSG_BODY = "msg_body";
 
@@ -196,12 +205,18 @@ public class ElasticSearch {
         long start = System.currentTimeMillis();
         SearchResponse<Template> searchResponse = esClient.search(searchRequest, Template.class);
         long end = System.currentTimeMillis();
-        logger.info("The searching time is : " + (end - start) + "ms");
 
-        logger.info("========================================================");
-        logger.info("========================================================");
-        logger.info("Calling the print response details function : ");
-        printTemplateSearchResponseDetails(searchResponse);
+        String template_name = searchResponse.hits().hits().get(0).source().getTemplate_name();
+        // logger.info("The first fit template_name : " + template_name);
+        if (template_name.equals(actual_template)) {
+            ApplicationStartupRunner.counter++;
+        }
+        // logger.info("The searching time is : " + (end - start) + "ms");
+
+        // logger.info("========================================================");
+        // logger.info("========================================================");
+        // logger.info("Calling the print response details function : ");
+        // printTemplateSearchResponseDetails(searchResponse);
 
         // logger.info("========================================================");
         // logger.info("========================================================");
