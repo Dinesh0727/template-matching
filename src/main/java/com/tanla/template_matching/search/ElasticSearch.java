@@ -166,7 +166,7 @@ public class ElasticSearch {
 
         logger.info("========================================================");
         logger.info("========================================================");
-        logger.info("Calling the print reponse details function : ");
+        logger.info("Calling the print response details function : ");
         printTemplateSearchResponseDetails(searchResponse);
 
         // logger.info("========================================================");
@@ -211,7 +211,7 @@ public class ElasticSearch {
         logger.info("========================================================");
         logger.info("========================================================");
         logger.info("Calling the print reponse details function : ");
-        printTemplateSearchResponseDetails(searchResponse);
+        // printTemplateSearchResponseDetails(searchResponse);
 
         logger.info("There is no matching template");
         return null;
@@ -227,15 +227,17 @@ public class ElasticSearch {
             logger.info("There are more than " + total.value() + " results");
         }
 
-        List<Hit<Template>> hits = searchResponse.hits().hits();
-        for (Hit<Template> hit : hits) {
-            Template template = hit.source();
-            logger.info("Found template " + template.getTemplate_name() + ", score: " + hit.score()
-                    + ", hitRank : " + hit.rank());
-        }
-        logger.info("======================");
-        logger.info("======================");
-        logger.info("The first fit template_name is : " + hits.get(0).source().getTemplate_name());
+        // List<Hit<Template>> hits = searchResponse.hits().hits();
+        // for (Hit<Template> hit : hits) {
+        // Template template = hit.source();
+        // logger.info("Found template " + template.getTemplate_name() + ", score: " +
+        // hit.score()
+        // + ", hitRank : " + hit.rank());
+        // }
+        // logger.info("======================");
+        // logger.info("======================");
+        // logger.info("The first fit template_name is : " +
+        // hits.get(0).source().getTemplate_name());
 
     }
 

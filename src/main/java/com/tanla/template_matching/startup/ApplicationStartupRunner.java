@@ -31,11 +31,7 @@ public class ApplicationStartupRunner implements CommandLineRunner {
                 // ArrayList<Template> cacheTemplateList = new ArrayList<>();
                 logger.info("The size of the example texts array is : " + Messages.exampleTexts.size());
 
-                String indexWithShingles = "template-texts-with-shingle";
-
-                String indexName = "template_texts";
-
-                String prod_template_index_name = "prod_templates_with_wordcount";
+                String prod_template_index_name = "prod_templates_with_wordcount_shingle";
 
                 logger.info("Searching through Elastic Search");
 

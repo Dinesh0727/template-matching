@@ -7,7 +7,7 @@ public class Template {
 
     private String template_name;
 
-    private String template_namespace_id;
+    private String word_count;
 
     private String msg_body;
 
@@ -27,12 +27,12 @@ public class Template {
         this.template_name = template_name;
     }
 
-    public String getTemplate_namespace_id() {
-        return template_namespace_id;
+    public String getWord_count() {
+        return word_count;
     }
 
-    public void setTemplate_namespace_id(String template_namespace_id) {
-        this.template_namespace_id = template_namespace_id;
+    public void setWord_count(String word_count) {
+        this.word_count = word_count;
     }
 
     public String getMsg_body() {
@@ -45,8 +45,8 @@ public class Template {
 
     @Override
     public String toString() {
-        return "Template [esmeaddr=" + esmeaddr + ", \ntemplate_name=" + template_name + "\n, template_namespace_id="
-                + template_namespace_id + "\n, msg_body=\n" + StringUtil.escapeSpecialCharacters(msg_body, "\\") + "]";
+        return "Template [esmeaddr=" + esmeaddr + ", \ntemplate_name=" + template_name + "\n, word_count="
+                + word_count + "\n, msg_body=\n" + StringUtil.escapeSpecialCharacters(msg_body, "\\") + "]";
     }
 
 }
