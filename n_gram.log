@@ -1,0 +1,713 @@
+// The index in which we searched in n_gram tokenized the setting of that Index is:
+{
+  "prod_templates_index_ngram_1": {
+    "settings": {
+      "index": {
+        "routing": {
+          "allocation": {
+            "include": {
+              "_tier_preference": "data_content"
+            }
+          }
+        },
+        "number_of_shards": "1",
+        "provided_name": "prod_templates_index_ngram_1",
+        "creation_date": "1726139716522",
+        "analysis": {
+          "filter": {
+            "shingle_filter": {
+              "max_shingle_size": "3",
+              "min_shingle_size": "2",
+              "output_unigrams": "true",
+              "type": "shingle"
+            }
+          },
+          "analyzer": {
+            "shingle_analyzer": {
+              "filter": [
+                "shingle_filter"
+              ],
+              "type": "custom",
+              "tokenizer": "ngram"
+            }
+          }
+        },
+        "number_of_replicas": "1",
+        "uuid": "iRYOKi0JSjCO4BDvBsaBVQ",
+        "version": {
+          "created": "8512000"
+        }
+      }
+    }
+  }
+}
+
+mapping:
+{
+  "prod_templates_index_ngram_1": {
+    "mappings": {
+      "properties": {
+        "esmeaddr": {
+          "type": "long"
+        },
+        "msg_body": {
+          "type": "text",
+          "analyzer": "shingle_analyzer"
+        },
+        "template_name": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword",
+              "ignore_above": 256
+            }
+          }
+        },
+        "word_count": {
+          "type": "long"
+        }
+      }
+    }
+  }
+}
+
+Other stats:
+{
+  "_shards": {
+    "total": 2,
+    "successful": 1,
+    "failed": 0
+  },
+  "_all": {
+    "primaries": {
+      "docs": {
+        "count": 599763,
+        "deleted": 0,
+        "total_size_in_bytes": 1952845073
+      },
+      "shard_stats": {
+        "total_count": 1
+      },
+      "store": {
+        "size_in_bytes": 1952847495,
+        "total_data_set_size_in_bytes": 1952847495,
+        "reserved_in_bytes": 0
+      },
+      "indexing": {
+        "index_total": 599763,
+        "index_time_in_millis": 635600,
+        "index_current": 0,
+        "index_failed": 0,
+        "delete_total": 0,
+        "delete_time_in_millis": 0,
+        "delete_current": 0,
+        "noop_update_total": 0,
+        "is_throttled": false,
+        "throttle_time_in_millis": 0,
+        "write_load": 0.12395992955636938
+      },
+      "get": {
+        "total": 0,
+        "time_in_millis": 0,
+        "exists_total": 0,
+        "exists_time_in_millis": 0,
+        "missing_total": 0,
+        "missing_time_in_millis": 0,
+        "current": 0
+      },
+      "search": {
+        "open_contexts": 0,
+        "query_total": 575,
+        "query_time_in_millis": 597845,
+        "query_current": 0,
+        "fetch_total": 575,
+        "fetch_time_in_millis": 12563,
+        "fetch_current": 0,
+        "scroll_total": 0,
+        "scroll_time_in_millis": 0,
+        "scroll_current": 0,
+        "suggest_total": 0,
+        "suggest_time_in_millis": 0,
+        "suggest_current": 0
+      },
+      "merges": {
+        "current": 0,
+        "current_docs": 0,
+        "current_size_in_bytes": 0,
+        "total": 14,
+        "total_time_in_millis": 306191,
+        "total_docs": 568459,
+        "total_size_in_bytes": 1934390451,
+        "total_stopped_time_in_millis": 0,
+        "total_throttled_time_in_millis": 59683,
+        "total_auto_throttle_in_bytes": 8085428
+      },
+      "refresh": {
+        "total": 103,
+        "total_time_in_millis": 89140,
+        "external_total": 82,
+        "external_total_time_in_millis": 80514,
+        "listeners": 0
+      },
+      "flush": {
+        "total": 15,
+        "periodic": 15,
+        "total_time_in_millis": 39047,
+        "total_time_excluding_waiting_on_lock_in_millis": 38932
+      },
+      "warmer": {
+        "current": 0,
+        "total": 81,
+        "total_time_in_millis": 523
+      },
+      "query_cache": {
+        "memory_size_in_bytes": 181388,
+        "total_count": 5737,
+        "hit_count": 5600,
+        "miss_count": 137,
+        "cache_size": 44,
+        "cache_count": 44,
+        "evictions": 0
+      },
+      "fielddata": {
+        "memory_size_in_bytes": 0,
+        "evictions": 0,
+        "global_ordinals": {
+          "build_time_in_millis": 0
+        }
+      },
+      "completion": {
+        "size_in_bytes": 0
+      },
+      "segments": {
+        "count": 26,
+        "memory_in_bytes": 0,
+        "terms_memory_in_bytes": 0,
+        "stored_fields_memory_in_bytes": 0,
+        "term_vectors_memory_in_bytes": 0,
+        "norms_memory_in_bytes": 0,
+        "points_memory_in_bytes": 0,
+        "doc_values_memory_in_bytes": 0,
+        "index_writer_memory_in_bytes": 0,
+        "version_map_memory_in_bytes": 0,
+        "fixed_bit_set_memory_in_bytes": 0,
+        "max_unsafe_auto_id_timestamp": -1,
+        "file_sizes": {}
+      },
+      "translog": {
+        "operations": 0,
+        "size_in_bytes": 55,
+        "uncommitted_operations": 0,
+        "uncommitted_size_in_bytes": 55,
+        "earliest_last_modified_age": 3967853
+      },
+      "request_cache": {
+        "memory_size_in_bytes": 1776,
+        "evictions": 0,
+        "hit_count": 40,
+        "miss_count": 12
+      },
+      "recovery": {
+        "current_as_source": 0,
+        "current_as_target": 0,
+        "throttle_time_in_millis": 0
+      },
+      "bulk": {
+        "total_operations": 600,
+        "total_time_in_millis": 732838,
+        "total_size_in_bytes": 238740100,
+        "avg_time_in_millis": 1635,
+        "avg_size_in_bytes": 448176
+      },
+      "dense_vector": {
+        "value_count": 0
+      },
+      "sparse_vector": {
+        "value_count": 0
+      }
+    },
+    "total": {
+      "docs": {
+        "count": 599763,
+        "deleted": 0,
+        "total_size_in_bytes": 1952845073
+      },
+      "shard_stats": {
+        "total_count": 1
+      },
+      "store": {
+        "size_in_bytes": 1952847495,
+        "total_data_set_size_in_bytes": 1952847495,
+        "reserved_in_bytes": 0
+      },
+      "indexing": {
+        "index_total": 599763,
+        "index_time_in_millis": 635600,
+        "index_current": 0,
+        "index_failed": 0,
+        "delete_total": 0,
+        "delete_time_in_millis": 0,
+        "delete_current": 0,
+        "noop_update_total": 0,
+        "is_throttled": false,
+        "throttle_time_in_millis": 0,
+        "write_load": 0.12395992955636938
+      },
+      "get": {
+        "total": 0,
+        "time_in_millis": 0,
+        "exists_total": 0,
+        "exists_time_in_millis": 0,
+        "missing_total": 0,
+        "missing_time_in_millis": 0,
+        "current": 0
+      },
+      "search": {
+        "open_contexts": 0,
+        "query_total": 575,
+        "query_time_in_millis": 597845,
+        "query_current": 0,
+        "fetch_total": 575,
+        "fetch_time_in_millis": 12563,
+        "fetch_current": 0,
+        "scroll_total": 0,
+        "scroll_time_in_millis": 0,
+        "scroll_current": 0,
+        "suggest_total": 0,
+        "suggest_time_in_millis": 0,
+        "suggest_current": 0
+      },
+      "merges": {
+        "current": 0,
+        "current_docs": 0,
+        "current_size_in_bytes": 0,
+        "total": 14,
+        "total_time_in_millis": 306191,
+        "total_docs": 568459,
+        "total_size_in_bytes": 1934390451,
+        "total_stopped_time_in_millis": 0,
+        "total_throttled_time_in_millis": 59683,
+        "total_auto_throttle_in_bytes": 8085428
+      },
+      "refresh": {
+        "total": 103,
+        "total_time_in_millis": 89140,
+        "external_total": 82,
+        "external_total_time_in_millis": 80514,
+        "listeners": 0
+      },
+      "flush": {
+        "total": 15,
+        "periodic": 15,
+        "total_time_in_millis": 39047,
+        "total_time_excluding_waiting_on_lock_in_millis": 38932
+      },
+      "warmer": {
+        "current": 0,
+        "total": 81,
+        "total_time_in_millis": 523
+      },
+      "query_cache": {
+        "memory_size_in_bytes": 181388,
+        "total_count": 5737,
+        "hit_count": 5600,
+        "miss_count": 137,
+        "cache_size": 44,
+        "cache_count": 44,
+        "evictions": 0
+      },
+      "fielddata": {
+        "memory_size_in_bytes": 0,
+        "evictions": 0,
+        "global_ordinals": {
+          "build_time_in_millis": 0
+        }
+      },
+      "completion": {
+        "size_in_bytes": 0
+      },
+      "segments": {
+        "count": 26,
+        "memory_in_bytes": 0,
+        "terms_memory_in_bytes": 0,
+        "stored_fields_memory_in_bytes": 0,
+        "term_vectors_memory_in_bytes": 0,
+        "norms_memory_in_bytes": 0,
+        "points_memory_in_bytes": 0,
+        "doc_values_memory_in_bytes": 0,
+        "index_writer_memory_in_bytes": 0,
+        "version_map_memory_in_bytes": 0,
+        "fixed_bit_set_memory_in_bytes": 0,
+        "max_unsafe_auto_id_timestamp": -1,
+        "file_sizes": {}
+      },
+      "translog": {
+        "operations": 0,
+        "size_in_bytes": 55,
+        "uncommitted_operations": 0,
+        "uncommitted_size_in_bytes": 55,
+        "earliest_last_modified_age": 3967853
+      },
+      "request_cache": {
+        "memory_size_in_bytes": 1776,
+        "evictions": 0,
+        "hit_count": 40,
+        "miss_count": 12
+      },
+      "recovery": {
+        "current_as_source": 0,
+        "current_as_target": 0,
+        "throttle_time_in_millis": 0
+      },
+      "bulk": {
+        "total_operations": 600,
+        "total_time_in_millis": 732838,
+        "total_size_in_bytes": 238740100,
+        "avg_time_in_millis": 1635,
+        "avg_size_in_bytes": 448176
+      },
+      "dense_vector": {
+        "value_count": 0
+      },
+      "sparse_vector": {
+        "value_count": 0
+      }
+    }
+  },
+  "indices": {
+    "prod_templates_index_ngram_1": {
+      "uuid": "iRYOKi0JSjCO4BDvBsaBVQ",
+      "health": "yellow",
+      "status": "open",
+      "primaries": {
+        "docs": {
+          "count": 599763,
+          "deleted": 0,
+          "total_size_in_bytes": 1952845073
+        },
+        "shard_stats": {
+          "total_count": 1
+        },
+        "store": {
+          "size_in_bytes": 1952847495,
+          "total_data_set_size_in_bytes": 1952847495,
+          "reserved_in_bytes": 0
+        },
+        "indexing": {
+          "index_total": 599763,
+          "index_time_in_millis": 635600,
+          "index_current": 0,
+          "index_failed": 0,
+          "delete_total": 0,
+          "delete_time_in_millis": 0,
+          "delete_current": 0,
+          "noop_update_total": 0,
+          "is_throttled": false,
+          "throttle_time_in_millis": 0,
+          "write_load": 0.12395992955636938
+        },
+        "get": {
+          "total": 0,
+          "time_in_millis": 0,
+          "exists_total": 0,
+          "exists_time_in_millis": 0,
+          "missing_total": 0,
+          "missing_time_in_millis": 0,
+          "current": 0
+        },
+        "search": {
+          "open_contexts": 0,
+          "query_total": 575,
+          "query_time_in_millis": 597845,
+          "query_current": 0,
+          "fetch_total": 575,
+          "fetch_time_in_millis": 12563,
+          "fetch_current": 0,
+          "scroll_total": 0,
+          "scroll_time_in_millis": 0,
+          "scroll_current": 0,
+          "suggest_total": 0,
+          "suggest_time_in_millis": 0,
+          "suggest_current": 0
+        },
+        "merges": {
+          "current": 0,
+          "current_docs": 0,
+          "current_size_in_bytes": 0,
+          "total": 14,
+          "total_time_in_millis": 306191,
+          "total_docs": 568459,
+          "total_size_in_bytes": 1934390451,
+          "total_stopped_time_in_millis": 0,
+          "total_throttled_time_in_millis": 59683,
+          "total_auto_throttle_in_bytes": 8085428
+        },
+        "refresh": {
+          "total": 103,
+          "total_time_in_millis": 89140,
+          "external_total": 82,
+          "external_total_time_in_millis": 80514,
+          "listeners": 0
+        },
+        "flush": {
+          "total": 15,
+          "periodic": 15,
+          "total_time_in_millis": 39047,
+          "total_time_excluding_waiting_on_lock_in_millis": 38932
+        },
+        "warmer": {
+          "current": 0,
+          "total": 81,
+          "total_time_in_millis": 523
+        },
+        "query_cache": {
+          "memory_size_in_bytes": 181388,
+          "total_count": 5737,
+          "hit_count": 5600,
+          "miss_count": 137,
+          "cache_size": 44,
+          "cache_count": 44,
+          "evictions": 0
+        },
+        "fielddata": {
+          "memory_size_in_bytes": 0,
+          "evictions": 0,
+          "global_ordinals": {
+            "build_time_in_millis": 0
+          }
+        },
+        "completion": {
+          "size_in_bytes": 0
+        },
+        "segments": {
+          "count": 26,
+          "memory_in_bytes": 0,
+          "terms_memory_in_bytes": 0,
+          "stored_fields_memory_in_bytes": 0,
+          "term_vectors_memory_in_bytes": 0,
+          "norms_memory_in_bytes": 0,
+          "points_memory_in_bytes": 0,
+          "doc_values_memory_in_bytes": 0,
+          "index_writer_memory_in_bytes": 0,
+          "version_map_memory_in_bytes": 0,
+          "fixed_bit_set_memory_in_bytes": 0,
+          "max_unsafe_auto_id_timestamp": -1,
+          "file_sizes": {}
+        },
+        "translog": {
+          "operations": 0,
+          "size_in_bytes": 55,
+          "uncommitted_operations": 0,
+          "uncommitted_size_in_bytes": 55,
+          "earliest_last_modified_age": 3967853
+        },
+        "request_cache": {
+          "memory_size_in_bytes": 1776,
+          "evictions": 0,
+          "hit_count": 40,
+          "miss_count": 12
+        },
+        "recovery": {
+          "current_as_source": 0,
+          "current_as_target": 0,
+          "throttle_time_in_millis": 0
+        },
+        "bulk": {
+          "total_operations": 600,
+          "total_time_in_millis": 732838,
+          "total_size_in_bytes": 238740100,
+          "avg_time_in_millis": 1635,
+          "avg_size_in_bytes": 448176
+        },
+        "dense_vector": {
+          "value_count": 0
+        },
+        "sparse_vector": {
+          "value_count": 0
+        }
+      },
+      "total": {
+        "docs": {
+          "count": 599763,
+          "deleted": 0,
+          "total_size_in_bytes": 1952845073
+        },
+        "shard_stats": {
+          "total_count": 1
+        },
+        "store": {
+          "size_in_bytes": 1952847495,
+          "total_data_set_size_in_bytes": 1952847495,
+          "reserved_in_bytes": 0
+        },
+        "indexing": {
+          "index_total": 599763,
+          "index_time_in_millis": 635600,
+          "index_current": 0,
+          "index_failed": 0,
+          "delete_total": 0,
+          "delete_time_in_millis": 0,
+          "delete_current": 0,
+          "noop_update_total": 0,
+          "is_throttled": false,
+          "throttle_time_in_millis": 0,
+          "write_load": 0.12395992955636938
+        },
+        "get": {
+          "total": 0,
+          "time_in_millis": 0,
+          "exists_total": 0,
+          "exists_time_in_millis": 0,
+          "missing_total": 0,
+          "missing_time_in_millis": 0,
+          "current": 0
+        },
+        "search": {
+          "open_contexts": 0,
+          "query_total": 575,
+          "query_time_in_millis": 597845,
+          "query_current": 0,
+          "fetch_total": 575,
+          "fetch_time_in_millis": 12563,
+          "fetch_current": 0,
+          "scroll_total": 0,
+          "scroll_time_in_millis": 0,
+          "scroll_current": 0,
+          "suggest_total": 0,
+          "suggest_time_in_millis": 0,
+          "suggest_current": 0
+        },
+        "merges": {
+          "current": 0,
+          "current_docs": 0,
+          "current_size_in_bytes": 0,
+          "total": 14,
+          "total_time_in_millis": 306191,
+          "total_docs": 568459,
+          "total_size_in_bytes": 1934390451,
+          "total_stopped_time_in_millis": 0,
+          "total_throttled_time_in_millis": 59683,
+          "total_auto_throttle_in_bytes": 8085428
+        },
+        "refresh": {
+          "total": 103,
+          "total_time_in_millis": 89140,
+          "external_total": 82,
+          "external_total_time_in_millis": 80514,
+          "listeners": 0
+        },
+        "flush": {
+          "total": 15,
+          "periodic": 15,
+          "total_time_in_millis": 39047,
+          "total_time_excluding_waiting_on_lock_in_millis": 38932
+        },
+        "warmer": {
+          "current": 0,
+          "total": 81,
+          "total_time_in_millis": 523
+        },
+        "query_cache": {
+          "memory_size_in_bytes": 181388,
+          "total_count": 5737,
+          "hit_count": 5600,
+          "miss_count": 137,
+          "cache_size": 44,
+          "cache_count": 44,
+          "evictions": 0
+        },
+        "fielddata": {
+          "memory_size_in_bytes": 0,
+          "evictions": 0,
+          "global_ordinals": {
+            "build_time_in_millis": 0
+          }
+        },
+        "completion": {
+          "size_in_bytes": 0
+        },
+        "segments": {
+          "count": 26,
+          "memory_in_bytes": 0,
+          "terms_memory_in_bytes": 0,
+          "stored_fields_memory_in_bytes": 0,
+          "term_vectors_memory_in_bytes": 0,
+          "norms_memory_in_bytes": 0,
+          "points_memory_in_bytes": 0,
+          "doc_values_memory_in_bytes": 0,
+          "index_writer_memory_in_bytes": 0,
+          "version_map_memory_in_bytes": 0,
+          "fixed_bit_set_memory_in_bytes": 0,
+          "max_unsafe_auto_id_timestamp": -1,
+          "file_sizes": {}
+        },
+        "translog": {
+          "operations": 0,
+          "size_in_bytes": 55,
+          "uncommitted_operations": 0,
+          "uncommitted_size_in_bytes": 55,
+          "earliest_last_modified_age": 3967853
+        },
+        "request_cache": {
+          "memory_size_in_bytes": 1776,
+          "evictions": 0,
+          "hit_count": 40,
+          "miss_count": 12
+        },
+        "recovery": {
+          "current_as_source": 0,
+          "current_as_target": 0,
+          "throttle_time_in_millis": 0
+        },
+        "bulk": {
+          "total_operations": 600,
+          "total_time_in_millis": 732838,
+          "total_size_in_bytes": 238740100,
+          "avg_time_in_millis": 1635,
+          "avg_size_in_bytes": 448176
+        },
+        "dense_vector": {
+          "value_count": 0
+        },
+        "sparse_vector": {
+          "value_count": 0
+        }
+      }
+    }
+  }
+}
+
+2024-09-12T17:48:38.129+05:30  INFO 304643 --- [template-matching] [restartedMain] c.t.t.TemplateMatchingApplication        : Starting TemplateMatchingApplication using Java 17.0.12 with PID 304643 (/home/dinesh/Elastic_Search_POC/template-matching/target/classes started by dinesh in /home/dinesh/Elastic_Search_POC/template-matching)
+2024-09-12T17:48:38.132+05:30  INFO 304643 --- [template-matching] [restartedMain] c.t.t.TemplateMatchingApplication        : No active profile set, falling back to 1 default profile: "default"
+2024-09-12T17:48:38.216+05:30  INFO 304643 --- [template-matching] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2024-09-12T17:48:38.217+05:30  INFO 304643 --- [template-matching] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2024-09-12T17:48:39.757+05:30  INFO 304643 --- [template-matching] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-09-12T17:48:39.774+05:30  INFO 304643 --- [template-matching] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-09-12T17:48:39.775+05:30  INFO 304643 --- [template-matching] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.28]
+2024-09-12T17:48:39.842+05:30  INFO 304643 --- [template-matching] [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-09-12T17:48:39.842+05:30  INFO 304643 --- [template-matching] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1624 ms
+2024-09-12T17:48:40.781+05:30  INFO 304643 --- [template-matching] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2024-09-12T17:48:40.832+05:30  INFO 304643 --- [template-matching] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-09-12T17:48:40.851+05:30  INFO 304643 --- [template-matching] [restartedMain] c.t.t.TemplateMatchingApplication        : Started TemplateMatchingApplication in 3.161 seconds (process running for 3.873)
+2024-09-12T17:48:40.962+05:30  INFO 304643 --- [template-matching] [restartedMain] c.t.t.startup.ApplicationStartupRunner   : Working with the normal More like this query with esmeAddr filter
+2024-09-12T17:48:56.458+05:30  INFO 304643 --- [template-matching] [restartedMain] c.t.t.search.ElasticSearch               : There is no matching template through Elastic Search
+2024-09-12T17:49:07.321+05:30  INFO 304643 --- [template-matching] [restartedMain] c.t.t.search.ElasticSearch               : There is no matching template through Elastic Search
+2024-09-12T17:49:12.637+05:30  INFO 304643 --- [template-matching] [restartedMain] c.t.t.search.ElasticSearch               : There is no matching template through Elastic Search
+2024-09-12T17:49:23.889+05:30  INFO 304643 --- [template-matching] [restartedMain] c.t.t.search.ElasticSearch               : There is no matching template through Elastic Search
+2024-09-12T17:50:00.553+05:30  INFO 304643 --- [template-matching] [restartedMain] c.t.t.search.ElasticSearch               : There is no matching template through Elastic Search
+2024-09-12T17:50:01.231+05:30  INFO 304643 --- [template-matching] [restartedMain] c.t.t.search.ElasticSearch               : There is no matching template through Elastic Search
+2024-09-12T17:50:12.495+05:30  INFO 304643 --- [template-matching] [restartedMain] c.t.t.search.ElasticSearch               : There is no matching template through Elastic Search
+2024-09-12T17:50:13.762+05:30  INFO 304643 --- [template-matching] [restartedMain] c.t.t.search.ElasticSearch               : There is no matching template through Elastic Search
+2024-09-12T17:50:20.774+05:30  INFO 304643 --- [template-matching] [restartedMain] c.t.t.search.ElasticSearch               : There is no matching template through Elastic Search
+2024-09-12T17:50:22.999+05:30  INFO 304643 --- [template-matching] [restartedMain] c.t.t.search.ElasticSearch               : There is no matching template through Elastic Search
+2024-09-12T17:51:01.230+05:30  INFO 304643 --- [template-matching] [restartedMain] c.t.t.search.ElasticSearch               : There is no matching template through Elastic Search
+2024-09-12T17:51:09.973+05:30  INFO 304643 --- [template-matching] [restartedMain] c.t.t.search.ElasticSearch               : There is no matching template through Elastic Search
+2024-09-12T17:51:10.263+05:30  INFO 304643 --- [template-matching] [restartedMain] c.t.t.search.ElasticSearch               : There is no matching template through Elastic Search
+2024-09-12T17:54:00.698+05:30  INFO 304643 --- [template-matching] [restartedMain] c.t.t.search.ElasticSearch               : There is no matching template through Elastic Search
+2024-09-12T17:55:39.211+05:30  INFO 304643 --- [template-matching] [restartedMain] c.t.t.search.ElasticSearch               : There is no matching template through Elastic Search
+2024-09-12T17:55:59.189+05:30  INFO 304643 --- [template-matching] [restartedMain] c.t.t.search.ElasticSearch               : There is no matching template through Elastic Search
+2024-09-12T17:56:48.256+05:30  INFO 304643 --- [template-matching] [restartedMain] c.t.t.search.ElasticSearch               : There is no matching template through Elastic Search
+2024-09-12T17:57:49.176+05:30  INFO 304643 --- [template-matching] [restartedMain] c.t.t.search.ElasticSearch               : There is no matching template through Elastic Search
+2024-09-12T17:59:38.052+05:30  INFO 304643 --- [template-matching] [restartedMain] c.t.t.startup.ApplicationStartupRunner   : Total Execution Time : 657085ms
+2024-09-12T17:59:38.055+05:30  INFO 304643 --- [template-matching] [restartedMain] c.t.t.startup.ApplicationStartupRunner   : Counter value : 94
+2024-09-12T17:59:38.070+05:30  INFO 304643 --- [template-matching] [restartedMain] c.t.t.startup.ApplicationStartupRunner   : The accuracy without word count is : 18.8
