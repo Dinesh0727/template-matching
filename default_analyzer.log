@@ -1,0 +1,16 @@
+2024-09-12T18:20:06.220+05:30  INFO 328334 --- [template-matching] [restartedMain] c.t.t.TemplateMatchingApplication        : Starting TemplateMatchingApplication using Java 17.0.12 with PID 328334 (/home/dinesh/Elastic_Search_POC/template-matching/target/classes started by dinesh in /home/dinesh/Elastic_Search_POC/template-matching)
+2024-09-12T18:20:06.224+05:30  INFO 328334 --- [template-matching] [restartedMain] c.t.t.TemplateMatchingApplication        : No active profile set, falling back to 1 default profile: "default"
+2024-09-12T18:20:06.316+05:30  INFO 328334 --- [template-matching] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2024-09-12T18:20:06.317+05:30  INFO 328334 --- [template-matching] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2024-09-12T18:20:08.377+05:30  INFO 328334 --- [template-matching] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-09-12T18:20:08.396+05:30  INFO 328334 --- [template-matching] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-09-12T18:20:08.397+05:30  INFO 328334 --- [template-matching] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.28]
+2024-09-12T18:20:08.456+05:30  INFO 328334 --- [template-matching] [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-09-12T18:20:08.456+05:30  INFO 328334 --- [template-matching] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2138 ms
+2024-09-12T18:20:09.282+05:30  INFO 328334 --- [template-matching] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2024-09-12T18:20:09.337+05:30  INFO 328334 --- [template-matching] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-09-12T18:20:09.357+05:30  INFO 328334 --- [template-matching] [restartedMain] c.t.t.TemplateMatchingApplication        : Started TemplateMatchingApplication in 3.643 seconds (process running for 4.245)
+2024-09-12T18:20:09.468+05:30  INFO 328334 --- [template-matching] [restartedMain] c.t.t.startup.ApplicationStartupRunner   : Working with the normal More like this query with esmeAddr filter
+2024-09-12T18:20:34.041+05:30  INFO 328334 --- [template-matching] [restartedMain] c.t.t.startup.ApplicationStartupRunner   : Total Execution Time : 24570ms
+2024-09-12T18:20:34.041+05:30  INFO 328334 --- [template-matching] [restartedMain] c.t.t.startup.ApplicationStartupRunner   : Counter value : 357
+2024-09-12T18:20:34.043+05:30  INFO 328334 --- [template-matching] [restartedMain] c.t.t.startup.ApplicationStartupRunner   : The accuracy without word count is : 71.4
