@@ -1,4 +1,4 @@
-Analysis is done based on 500 input messages
+Analysis is done based on 500 input messages and after narrowing down the templates with esmeaddr
 
 N-Gram Tokenizer:
 It occupied 1.8 GB of disk space. 
