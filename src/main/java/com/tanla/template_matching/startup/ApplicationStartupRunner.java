@@ -25,17 +25,17 @@ public class ApplicationStartupRunner implements CommandLineRunner {
         public void run(String... args) throws IOException {
                 InputMessageGenerator.run();
 
-                String prod_template_index_name = "prod_templates_with_wordcount_shingle";
+                String prod_template_index_name = "prod_templates_with_wordcount";
 
                 // logger.info("Searching through Elastic Search");
 
-                Integer numberOfHitsToBeConsidered = 3;
+                Integer numberOfHitsToBeConsidered = 10;
 
                 // Using without regex elastic search
                 logger.info("Working with the normal More like this query with esmeAddr filter");
                 long start = System.currentTimeMillis();
                 for (int i = 0; i < InputMessageGenerator.inputMessagesFromProd.getInputMessages().size(); i++) {
-                        // logger.info("\n\nSearching Message : " + i);
+                        logger.info("\n\nSearching Message : " + i);
                         ElasticSearch.moreLikeThisTemplateSearch(esClient,
                                         prod_template_index_name,
                                         numberOfHitsToBeConsidered,

@@ -172,6 +172,19 @@ public class ElasticSearch {
             ApplicationStartupRunner.counter++;
         } else {
             // debuggingData(index, searchResponse);
+            // Do the Regex Matching over the top 5 hits
+
+            List<Hit<Template>> hits = searchResponse.hits().hits();
+            for (int i = 0; i < (searchResponse.hits().hits().size() >= 10 ? 10
+                    : searchResponse.hits().hits().size()); i++) {
+                String ithTemplateName = hits.get(i).source().getTemplate_name();
+                if (ithTemplateName.equals(
+                        InputMessageGenerator.inputMessagesFromProd.getInputMessages().get(index).getTemplate_id())) {
+                    ApplicationStartupRunner.counter++;
+                    return true;
+                }
+            }
+            debuggingData(index, searchResponse);
         }
 
         if (searchResponse.hits().total().value() == 0) {
