@@ -4,23 +4,23 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.tanla.template_matching.data.InputData2;
 import com.tanla.template_matching.entity.Message;
 import com.tanla.template_matching.entity.Template;
 import com.tanla.template_matching.startup.ApplicationStartupRunner;
+import com.tanla.template_matching.startup.InputMessageGenerator;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._helpers.bulk.BulkIngester;
 import co.elastic.clients.elasticsearch._types.ElasticsearchException;
-import co.elastic.clients.elasticsearch._types.Script;
+import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.MoreLikeThisQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.RangeQuery;
-import co.elastic.clients.elasticsearch._types.query_dsl.ScriptQuery;
 import co.elastic.clients.elasticsearch.core.BulkRequest;
 import co.elastic.clients.elasticsearch.core.BulkResponse;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
@@ -30,7 +30,6 @@ import co.elastic.clients.elasticsearch.core.search.Hit;
 import co.elastic.clients.elasticsearch.core.search.TotalHits;
 import co.elastic.clients.elasticsearch.core.search.TotalHitsRelation;
 import co.elastic.clients.elasticsearch.indices.ExistsRequest;
-import co.elastic.clients.json.JsonData;
 
 public class ElasticSearch {
 
@@ -133,42 +132,48 @@ public class ElasticSearch {
     }
 
     public static boolean moreLikeThisTemplateSearch(ElasticsearchClient esClient, String template_text_index,
-            String searchText, Integer numberOfHitsToBeConsidered, String actual_template_name)
+            Integer numberOfHitsToBeConsidered, int index)
             throws IOException {
 
         final String MSG_BODY = "msg_body";
 
+        MatchQuery matchQuery = MatchQuery.of(m -> m
+                .field("esmeaddr")
+                .query(InputMessageGenerator.inputMessagesFromProd.getInputMessages().get(index).getEsmeaddr()));
+
         MoreLikeThisQuery mltQuery = MoreLikeThisQuery.of(mlt -> mlt
                 .fields(MSG_BODY)
-                .like(l -> l.text(searchText))
+                .like(l -> l.text(
+                        InputMessageGenerator.inputMessagesFromProd.getInputMessages().get(index).getMessage_text()))
                 .minTermFreq(1)
                 .minDocFreq(2)
                 .stopWords(Arrays.asList("a", "the", "and", "of", "in")));
 
         SearchRequest searchRequest = SearchRequest.of(sr -> sr
                 .index(template_text_index)
-                .query(q -> q.moreLikeThis(mltQuery))
+                .query(q -> q
+                        .bool(b -> b
+                                .filter(f -> f.match(matchQuery))
+                                .must(m -> m.moreLikeThis(mltQuery))))
                 .size(numberOfHitsToBeConsidered));
 
         long start = System.currentTimeMillis();
         SearchResponse<Template> searchResponse = esClient.search(searchRequest, Template.class);
         long end = System.currentTimeMillis();
 
-        String template_name = searchResponse.hits().hits().get(0).source().getTemplate_name();
-        // logger.info("The first fit template_name : " + template_name);
-        if (template_name.equals(actual_template_name)) {
-            ApplicationStartupRunner.counter++;
-        }
         // logger.info("The searching time is : " + (end - start) + "ms");
 
-        // logger.info("========================================================");
-        // logger.info("========================================================");
-        // logger.info("Calling the print response details function : ");
-        // printTemplateSearchResponseDetails(searchResponse);
+        String template_name = "dummy";
+        if (searchResponse.hits().hits().size() != 0) {
+            template_name = searchResponse.hits().hits().get(0).source().getTemplate_name();
+        }
+        if (template_name
+                .equals(InputMessageGenerator.inputMessagesFromProd.getInputMessages().get(index).getTemplate_id())) {
+            ApplicationStartupRunner.counter++;
+        } else {
+            // debuggingData(index, searchResponse);
+        }
 
-        // logger.info("========================================================");
-        // logger.info("========================================================");
-        // logger.info("Printing the search text" + "\n " + searchText);
         if (searchResponse.hits().total().value() == 0) {
             logger.info("There is no matching template through Elastic Search");
             return false;
@@ -179,7 +184,7 @@ public class ElasticSearch {
 
     public static boolean moreLikeThisTemplateSearchWithRangeQuery(ElasticsearchClient esClient,
             String template_text_index,
-            String searchText, Integer numberOfHitsToBeConsidered, String actual_template)
+            String searchText, Integer numberOfHitsToBeConsidered, int index)
             throws IOException {
 
         final String MSG_BODY = "msg_body";
@@ -208,25 +213,54 @@ public class ElasticSearch {
 
         String template_name = searchResponse.hits().hits().get(0).source().getTemplate_name();
         // logger.info("The first fit template_name : " + template_name);
-        if (template_name.equals(actual_template)) {
+        if (template_name.equals(InputData2.templateNames.get(index))) {
             ApplicationStartupRunner.counter++;
         }
-        // logger.info("The searching time is : " + (end - start) + "ms");
 
-        // logger.info("========================================================");
-        // logger.info("========================================================");
-        // logger.info("Calling the print response details function : ");
-        // printTemplateSearchResponseDetails(searchResponse);
+        debuggingData(index, searchResponse);
 
-        // logger.info("========================================================");
-        // logger.info("========================================================");
-        // logger.info("Printing the search text" + "\n " + searchText);
         if (searchResponse.hits().total().value() == 0) {
             logger.info("There is no matching template through Elastic Search");
             return false;
         }
 
         return true;
+    }
+
+    private static void debuggingData(int index, SearchResponse<Template> searchResponse) {
+        List<Hit<Template>> topThreeHits = searchResponse.hits().hits();
+
+        logger.info("First Fit : " + topThreeHits.get(0).source().getTemplate_name());
+        logger.info("Actual Fit : "
+                + InputMessageGenerator.inputMessagesFromProd.getInputMessages().get(index).getTemplate_id());
+
+        if (topThreeHits != null && topThreeHits.size() > 0) {
+            logger.info("First Fit : " + topThreeHits.get(0).source().getTemplate_name());
+            logger.info(topThreeHits.get(0).source().getMsg_body().replace("\n", "\\n").replace("\r", "\\r"));
+        } else {
+            logger.info("No first hit available.");
+        }
+
+        logger.info("Actual Fit : "
+                + InputMessageGenerator.inputMessagesFromProd.getInputMessages().get(index).getTemplate_id());
+
+        logger.info("Message : ");
+        logger.info(InputMessageGenerator.inputMessagesFromProd.getInputMessages().get(index).getMessage_text()
+                .replace("\n", "\\n").replace("\r", "\\r"));
+
+        if (topThreeHits.size() > 1) {
+            logger.info("Second Fit : " + topThreeHits.get(1).source().getTemplate_name());
+            logger.info(topThreeHits.get(1).source().getMsg_body().replace("\n", "\\n").replace("\r", "\\r"));
+        } else {
+            logger.info("No second hit available.");
+        }
+
+        if (topThreeHits.size() > 2) {
+            logger.info("Third Fit : " + topThreeHits.get(2).source().getTemplate_name());
+            logger.info(topThreeHits.get(2).source().getMsg_body().replace("\n", "\\n").replace("\r", "\\r"));
+        } else {
+            logger.info("No third hit available.");
+        }
     }
 
     public static Template moreLikeThisTemplateSearchWithRegex(ElasticsearchClient esClient, String template_text_index,
