@@ -131,6 +131,27 @@ public class ElasticSearch {
         printResponseDetails(searchResponse);
     }
 
+    public static boolean templateNameSearch(ElasticsearchClient esClient, int index, String indexName)
+            throws ElasticsearchException, IOException {
+        String templateName = InputMessageGenerator.inputMessagesFromProd.getInputMessages().get(index)
+                .getTemplate_id();
+
+        SearchResponse<Template> searchResponse = esClient.search(
+                s -> s.index(indexName).query(q -> q.match(m -> m.field("template_name").query(templateName))),
+                Template.class);
+
+        if (searchResponse.hits().hits().size() == 0) {
+            ApplicationStartupRunner.counter++;
+            return false;
+        } else {
+            if (searchResponse.hits().hits().get(0).source().getTemplate_name().equals(templateName)) {
+                return true;
+            }
+        }
+
+        return true;
+    }
+
     public static boolean moreLikeThisTemplateSearch(ElasticsearchClient esClient, String template_text_index,
             Integer numberOfHitsToBeConsidered, int index)
             throws IOException {
@@ -144,7 +165,8 @@ public class ElasticSearch {
         MoreLikeThisQuery mltQuery = MoreLikeThisQuery.of(mlt -> mlt
                 .fields(MSG_BODY)
                 .like(l -> l.text(
-                        InputMessageGenerator.inputMessagesFromProd.getInputMessages().get(index).getMessage_text()))
+                        InputMessageGenerator.inputMessagesFromProd.getInputMessages().get(index).getMessage_text()
+                                .replace("\n", "\\n")))
                 .minTermFreq(1)
                 .minDocFreq(2)
                 .stopWords(Arrays.asList("a", "the", "and", "of", "in")));
@@ -177,9 +199,12 @@ public class ElasticSearch {
             List<Hit<Template>> hits = searchResponse.hits().hits();
             for (int i = 0; i < (searchResponse.hits().hits().size() >= 10 ? 10
                     : searchResponse.hits().hits().size()); i++) {
-                String ithTemplateName = hits.get(i).source().getTemplate_name();
-                if (ithTemplateName.equals(
-                        InputMessageGenerator.inputMessagesFromProd.getInputMessages().get(index).getTemplate_id())) {
+                // String ithTemplateName = hits.get(i).source().getTemplate_name();
+                // java input request with filter body
+
+                if (RegexSearch.matchTemplate(
+                        InputMessageGenerator.inputMessagesFromProd.getInputMessages().get(index).getMessage_text(),
+                        hits.get(i).source().getMsg_body(), index)) {
                     ApplicationStartupRunner.counter++;
                     return true;
                 }
