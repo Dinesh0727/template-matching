@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.tanla.template_matching.Utils.DummyMessages;
 import com.tanla.template_matching.data.InputData2;
 import com.tanla.template_matching.entity.Message;
 import com.tanla.template_matching.entity.Template;
@@ -27,6 +28,7 @@ import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.bulk.BulkResponseItem;
 import co.elastic.clients.elasticsearch.core.search.Hit;
+import co.elastic.clients.elasticsearch.core.search.SourceFilter;
 import co.elastic.clients.elasticsearch.core.search.TotalHits;
 import co.elastic.clients.elasticsearch.core.search.TotalHitsRelation;
 import co.elastic.clients.elasticsearch.indices.ExistsRequest;
@@ -34,6 +36,9 @@ import co.elastic.clients.elasticsearch.indices.ExistsRequest;
 public class ElasticSearch {
 
     private static Logger logger = LogManager.getLogger(ElasticSearch.class);
+
+    private static final String MSG_BODY = "msg_body";
+    private static final String ESME_ADDR = "esmeaddr";
 
     public static void createIndex(ElasticsearchClient esClient, String indexName) throws IOException {
         if (!esClient.indices().exists(ExistsRequest.of(e -> e.index(indexName))).value())
@@ -153,26 +158,23 @@ public class ElasticSearch {
     }
 
     public static boolean moreLikeThisTemplateSearch(ElasticsearchClient esClient, String template_text_index,
-            Integer numberOfHitsToBeConsidered, int index)
+            Integer numberOfHitsToBeConsidered, String searchText, String emseAddr)
             throws IOException {
 
-        final String MSG_BODY = "msg_body";
-
         MatchQuery matchQuery = MatchQuery.of(m -> m
-                .field("esmeaddr")
-                .query(InputMessageGenerator.inputMessagesFromProd.getInputMessages().get(index).getEsmeaddr()));
+                .field(ESME_ADDR)
+                .query(emseAddr));
 
         MoreLikeThisQuery mltQuery = MoreLikeThisQuery.of(mlt -> mlt
                 .fields(MSG_BODY)
-                .like(l -> l.text(
-                        InputMessageGenerator.inputMessagesFromProd.getInputMessages().get(index).getMessage_text()
-                                .replace("\n", "\\n")))
+                .like(l -> l.text(searchText.replace("\n", "\\n")))
                 .minTermFreq(1)
                 .minDocFreq(2)
                 .stopWords(Arrays.asList("a", "the", "and", "of", "in")));
 
         SearchRequest searchRequest = SearchRequest.of(sr -> sr
                 .index(template_text_index)
+                // .source(s -> s.filter(v))
                 .query(q -> q
                         .bool(b -> b
                                 .filter(f -> f.match(matchQuery))
@@ -183,41 +185,202 @@ public class ElasticSearch {
         SearchResponse<Template> searchResponse = esClient.search(searchRequest, Template.class);
         long end = System.currentTimeMillis();
 
-        // logger.info("The searching time is : " + (end - start) + "ms");
+        logger.info("The searching time in the ES Database is : " + (end - start) + "ms");
 
-        String template_name = "dummy";
-        if (searchResponse.hits().hits().size() != 0) {
-            template_name = searchResponse.hits().hits().get(0).source().getTemplate_name();
-        }
-        if (template_name
-                .equals(InputMessageGenerator.inputMessagesFromProd.getInputMessages().get(index).getTemplate_id())) {
+        List<Hit<Template>> hits = searchResponse.hits().hits();
+
+        if (hits.size() == 0)
+            return false;
+        logger.info("I am here the number of hits are : " + hits.size());
+        if (hits.size() != 0 && RegexSearch.matchTemplate(
+                searchText,
+                hits.get(0).source().getMsg_body(), 0)) {
+            logger.info("I am in the true case in the top hit");
             ApplicationStartupRunner.counter++;
+            return true;
         } else {
-            // debuggingData(index, searchResponse);
             // Do the Regex Matching over the top 5 hits
-
-            List<Hit<Template>> hits = searchResponse.hits().hits();
-            for (int i = 0; i < (searchResponse.hits().hits().size() >= 10 ? 10
-                    : searchResponse.hits().hits().size()); i++) {
-                // String ithTemplateName = hits.get(i).source().getTemplate_name();
-                // java input request with filter body
+            for (int i = 1; i < hits.size(); i++) {
 
                 if (RegexSearch.matchTemplate(
-                        InputMessageGenerator.inputMessagesFromProd.getInputMessages().get(index).getMessage_text(),
-                        hits.get(i).source().getMsg_body(), index)) {
+                        searchText,
+                        hits.get(i).source().getMsg_body(), 0)) {
                     ApplicationStartupRunner.counter++;
+                    logger.info("I am in the true case but in the top 5 hits");
                     return true;
                 }
             }
-            debuggingData(index, searchResponse);
+            ApplicationStartupRunner.time += (end - start);
+            // debuggingData(index, searchResponse);
         }
 
-        if (searchResponse.hits().total().value() == 0) {
-            logger.info("There is no matching template through Elastic Search");
+        // logger.info("No match is found, this happened even with actual matching
+        // template in ES DB");
+        // logger.info("Because there is a mismatch, I am printing the hits");
+        // for (int i = 0; i < hits.size(); i++) {
+        // logger.info("Hit " + (i + 1) + "Template Name : " +
+        // hits.get(i).source().getTemplate_name());
+        // logger.info(
+        // "Hit " + (i + 1) + "Template Body : " +
+        // hits.get(i).source().getMsg_body().replace("\n", "\\n"));
+        // }
+
+        return false;
+    }
+
+    public static boolean moreLikeThisTemplateSearchWithCaseSensitivity(ElasticsearchClient esClient,
+            String template_text_index,
+            Integer numberOfHitsToBeConsidered, String searchText, String emseAddr, boolean caseSensitivity)
+            throws IOException {
+
+        MatchQuery matchQuery = MatchQuery.of(m -> m
+                .field(ESME_ADDR)
+                .query(emseAddr));
+
+        MoreLikeThisQuery mltQuery = MoreLikeThisQuery.of(mlt -> mlt
+                .fields(MSG_BODY)
+                .like(l -> l.text(searchText))
+                .minTermFreq(1)
+                .minDocFreq(2)
+                .stopWords(Arrays.asList("a", "the", "and", "of", "in")));
+
+        SearchRequest searchRequest = SearchRequest.of(sr -> sr
+                .index(template_text_index)
+                // .source(s -> s.filter(v))
+                .query(q -> q
+                        .bool(b -> b
+                                .filter(f -> f.match(matchQuery))
+                                .must(m -> m.moreLikeThis(mltQuery))))
+                .size(numberOfHitsToBeConsidered));
+
+        long start = System.currentTimeMillis();
+        SearchResponse<Template> searchResponse = esClient.search(searchRequest, Template.class);
+        long end = System.currentTimeMillis();
+
+        logger.info("The searching time in the ES Database is : " + (end - start) + "ms");
+
+        List<Hit<Template>> hits = searchResponse.hits().hits();
+
+        if (hits.size() == 0)
             return false;
+        logger.info("I am here the number of hits are : " + hits.size());
+        if (caseSensitivity) {
+            if (hits.size() != 0 && RegexSearch.matchTemplate(
+                    searchText,
+                    hits.get(0).source().getMsg_body(), 0)) {
+                logger.info("I am in the true case in the top hit");
+                ApplicationStartupRunner.counter++;
+                return true;
+            } else {
+                // Do the Regex Matching over the top 5 hits
+                for (int i = 1; i < hits.size(); i++) {
+
+                    if (RegexSearch.matchTemplate(
+                            searchText,
+                            hits.get(i).source().getMsg_body(), 0)) {
+                        ApplicationStartupRunner.counter++;
+                        logger.info("I am in the true case but in the top 5 hits");
+                        return true;
+                    }
+                }
+                ApplicationStartupRunner.time += (end - start);
+                // debuggingData(index, searchResponse);
+            }
+        } else {
+            if (hits.size() != 0 && RegexSearch.matchTemplateCaseInsensitive(
+                    searchText,
+                    hits.get(0).source().getMsg_body(), 0)) {
+                logger.info("I am in the true case in the top hit");
+                ApplicationStartupRunner.counter++;
+                return true;
+            } else {
+                // Do the Regex Matching over the top 5 hits
+                for (int i = 1; i < hits.size(); i++) {
+
+                    if (RegexSearch.matchTemplateCaseInsensitive(
+                            searchText,
+                            hits.get(i).source().getMsg_body(), 0)) {
+                        ApplicationStartupRunner.counter++;
+                        logger.info("I am in the true case but in the top 5 hits");
+                        return true;
+                    }
+                }
+                ApplicationStartupRunner.time += (end - start);
+                // debuggingData(index, searchResponse);
+            }
         }
 
-        return true;
+        logger.info("There is no matching template through Elastic Search");
+
+        return false;
+    }
+
+    public static boolean moreLikeThisTemplateSearchForNumberOfSpaces(ElasticsearchClient esClient,
+            String template_text_index,
+            Integer numberOfHitsToBeConsidered, String searchText, String emseAddr)
+            throws IOException {
+
+        MatchQuery matchQuery = MatchQuery.of(m -> m
+                .field(ESME_ADDR)
+                .query(emseAddr));
+
+        MoreLikeThisQuery mltQuery = MoreLikeThisQuery.of(mlt -> mlt
+                .fields(MSG_BODY)
+                .like(l -> l.text(searchText.replace("\n", "\\n")))
+                .minTermFreq(1)
+                .minDocFreq(2)
+                .stopWords(Arrays.asList("a", "the", "and", "of", "in")));
+
+        SearchRequest searchRequest = SearchRequest.of(sr -> sr
+                .index(template_text_index)
+                // .source(s -> s.filter(v))
+                .query(q -> q
+                        .bool(b -> b
+                                .filter(f -> f.match(matchQuery))
+                                .must(m -> m.moreLikeThis(mltQuery))))
+                .size(numberOfHitsToBeConsidered));
+
+        long start = System.currentTimeMillis();
+        SearchResponse<Template> searchResponse = esClient.search(searchRequest, Template.class);
+        long end = System.currentTimeMillis();
+
+        logger.info("The searching time in the ES Database is : " + (end - start) + "ms");
+
+        List<Hit<Template>> hits = searchResponse.hits().hits();
+
+        if (hits.size() == 0)
+            return false;
+        logger.info("I am here the number of hits are : " + hits.size());
+        for (int i = 0; i < hits.size(); i++) {
+            logger.info("The template_id : " + hits.get(i).source().getTemplate_name());
+            logger.info("Hit " + (i + 1) + " : " +
+                    hits.get(i).source().getMsg_body().replace("\n", "\\n"));
+        }
+        if (hits.size() != 0 && RegexSearch.matchTemplate(
+                searchText,
+                hits.get(0).source().getMsg_body(), 0)) {
+            logger.info("I am in the true case in the top hit");
+            ApplicationStartupRunner.counter++;
+            return true;
+        } else {
+            // Do the Regex Matching over the top 5 hits
+            for (int i = 1; i < hits.size(); i++) {
+
+                if (RegexSearch.matchTemplate(
+                        searchText,
+                        hits.get(i).source().getMsg_body(), 0)) {
+                    ApplicationStartupRunner.counter++;
+                    logger.info("I am in the true case but in the top 5 hits");
+                    return true;
+                }
+            }
+            ApplicationStartupRunner.time += (end - start);
+            // debuggingData(index, searchResponse);
+        }
+
+        logger.info("There is no matching template through Elastic Search");
+
+        return false;
     }
 
     public static boolean moreLikeThisTemplateSearchWithRangeQuery(ElasticsearchClient esClient,

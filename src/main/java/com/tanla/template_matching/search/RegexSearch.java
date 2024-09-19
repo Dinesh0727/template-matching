@@ -65,4 +65,42 @@ public class RegexSearch {
 
         return false;
     }
+
+    public static boolean matchTemplateCaseInsensitive(String inputMsg, String preExistingTemplateBody, int index) {
+
+        String temp = StringUtil.escapeSpecialCharacters(
+                StringUtil.escapeSpecialCharacters(preExistingTemplateBody, StringUtil.escapeCharSet1)
+                        .replaceAll("\\{\\{\\d*\\}\\}", "(.*)"),
+                StringUtil.escapeCharSet2);
+
+        String finalPattern = temp.toLowerCase();
+
+        if (StringUtils.isBlank(finalPattern) || "null".equals(finalPattern)) {
+            return false; // continue with the next template
+        }
+
+        if (StringUtils.isNotEmpty(finalPattern) && !"null".equals(finalPattern)) {
+            try {
+                Pattern pattern = Pattern.compile(finalPattern);
+                Matcher matcher = pattern.matcher(inputMsg.toLowerCase());
+                while (matcher.matches()) {
+                    int count = matcher.groupCount();
+                    String[] params = new String[count];
+                    for (int i = 0; i < count; i++) {
+                        params[i] = matcher.group(i + 1);
+                    }
+                    // for (String x : params) {
+                    // System.out.println(x);
+                    // }
+                    return true;
+                }
+
+            } catch (PatternSyntaxException exception) {
+                System.out.println("Id of the document where the exception occured : " + index);
+                System.err.println("\n" + exception);
+            }
+        }
+
+        return false;
+    }
 }

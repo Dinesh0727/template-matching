@@ -2,77 +2,86 @@ package com.tanla.template_matching.startup;
 
 import java.io.IOException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import com.tanla.template_matching.Utils.PreExistingTemplates;
 import com.tanla.template_matching.search.ElasticSearch;
-import com.tanla.template_matching.search.RegexSearch;
-
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import org.springframework.stereotype.Component;
 
 // @Component
 public class LoadTester implements CommandLineRunner {
-    public static String searchText = "Dear Parent,\n\nThank you for registering with CodeAcademy\n\nRequest you to update your & your child’s names & email id to receive your personalized Coding Fundamentals Certificate\n\nClick here to fill in your details: https://codeacademy.com/update-details \n\nRegards,\nTeam CodeAcademy";
-
     @Autowired
     public ElasticsearchClient elasticsearchClient;
 
+    private String indexName = "my-index-000003";
+
+    private final Logger logger = LogManager.getLogger(LoadTester.class);
+
     @Override
-    public void run(String... args) throws IOException, InterruptedException {
+    public void run(String... args) throws IOException {
         Long start, end;
         int i;
 
-        Thread.sleep(5000); // Makes sure that the database has been set up
+        // Makes sure that the database has been set up
+        InputMessageGenerator.run();
 
-        String searchText = "Dear Parent,\n\nThank you for registering with CodeAcademy\n\nRequest you to update your & your child’s names & email id to receive your personalized Coding Fundamentals Certificate\n\nClick here to fill in your details: https://codeacademy.com/update-details \n\nRegards,\nTeam CodeAcademy";
-
-        System.out.println("==========================================================================");
-        System.out.println("Running Elastic Search for 1, 1000, 100,000 rounds");
-        System.out.println("==========================================================================");
+        logger.info("==========================================================================");
+        logger.info("Running Elastic Search for 1, 1000 rounds");
+        logger.info("==========================================================================");
         start = System.currentTimeMillis();
-        ElasticSearch.moreLikeThisSearch(elasticsearchClient, PreExistingTemplates.templates_index, searchText);
+        // ElasticSearch.moreLikeThisSearch(elasticsearchClient,
+        // PreExistingTemplates.templates_index, searchText);
+        runSearch(elasticsearchClient);
         end = System.currentTimeMillis();
-        System.out.println("Execution time for 1 run = " + (end - start) + "ms");
-
-        start = System.currentTimeMillis();
-        for (i = 0; i < 1000; i++) {
-            ElasticSearch.moreLikeThisSearch(elasticsearchClient, PreExistingTemplates.templates_index, searchText);
-        }
-        end = System.currentTimeMillis();
-        System.out.println("Execution time for 1000 runs = " + (end - start) + "ms");
-        System.out.println("Execution time for 1 run(avg) = " + (end - start) / 1000.0 + "ms");
-
-        start = System.currentTimeMillis();
-        for (i = 0; i < 100000; i++) {
-            ElasticSearch.moreLikeThisSearch(elasticsearchClient, PreExistingTemplates.templates_index, searchText);
-        }
-        end = System.currentTimeMillis();
-        System.out.println("Execution time for 100,000 runs = " + (end - start) + "ms");
-        System.out.println("Execution time for 1 run(avg) = " + (end - start) / 100000.0 + "ms");
-
-        System.out.println("==========================================================================");
-        System.out.println("Running Regex Search for 1, 1000, 100,000 rounds");
-        System.out.println("==========================================================================");
-        start = System.currentTimeMillis();
-        RegexSearch.regexSearch(searchText, PreExistingTemplates.strings);
-        end = System.currentTimeMillis();
-        System.out.println("Execution time for 1 run = " + (end - start) + "ms");
+        logger.info("Execution time for 1 run = " + (end - start) + "ms");
 
         start = System.currentTimeMillis();
         for (i = 0; i < 1000; i++) {
-            RegexSearch.regexSearch(searchText, PreExistingTemplates.strings);
+            // ElasticSearch.moreLikeThisSearch(elasticsearchClient,
+            // PreExistingTemplates.templates_index, searchText);
+            runSearch(elasticsearchClient);
         }
         end = System.currentTimeMillis();
-        System.out.println("Execution time for 1000 runs = " + (end - start) + "ms");
-        System.out.println("Execution time for 1 run(avg) = " + (end - start) / 1000.0 + "ms");
+        logger.info("Execution time for 1000 runs = " + (end - start) + "ms");
+        logger.info("Execution time for 1 run(avg) = " + (end - start) / 1000.0 + "ms");
 
-        start = System.currentTimeMillis();
-        for (i = 0; i < 100000; i++) {
-            RegexSearch.regexSearch(searchText, PreExistingTemplates.strings);
+        // start = System.currentTimeMillis();
+        // for (i = 0; i < 100000; i++) {
+        // ElasticSearch.moreLikeThisSearch(elasticsearchClient,
+        // PreExistingTemplates.templates_index, searchText);
+        // }
+        // end = System.currentTimeMillis();
+        // logger.info("Execution time for 100,000 runs = " + (end - start) +
+        // "ms");
+        // logger.info("Execution time for 1 run(avg) = " + (end - start) /
+        // 100000.0 + "ms");
+
+        // logger.info("==========================================================================");
+        // logger.info("Running Regex Search for 1, 1000, 100,000 rounds");
+        // logger.info("==========================================================================");
+        // start = System.currentTimeMillis();
+        // RegexSearch.regexSearch(searchText, PreExistingTemplates.strings);
+        // end = System.currentTimeMillis();
+        // logger.info("Execution time for 1 run = " + (end - start) + "ms");
+
+        // start = System.currentTimeMillis();
+        // for (i = 0; i < 1000; i++) {
+        // RegexSearch.regexSearch(searchText, PreExistingTemplates.strings);
+        // }
+        // end = System.currentTimeMillis();
+        // logger.info("Execution time for 1000 runs = " + (end - start) + "ms");
+        // logger.info("Execution time for 1 run(avg) = " + (end - start) /
+        // 1000.0 + "ms");
+
+    }
+
+    private void runSearch(ElasticsearchClient esClient) throws IOException {
+        for (int i = 0; i < InputMessageGenerator.inputMessagesFromProd.getInputMessages().size(); i++) {
+            ElasticSearch.moreLikeThisTemplateSearch(esClient, indexName, 5,
+                    InputMessageGenerator.inputMessagesFromProd.getInputMessages().get(i).getMessage_text(),
+                    InputMessageGenerator.inputMessagesFromProd.getInputMessages().get(i).getEsmeaddr());
         }
-        end = System.currentTimeMillis();
-        System.out.println("Execution time for 100,000 runs = " + (end - start) + "ms");
-        System.out.println("Execution time for 1 run(avg) = " + (end - start) / 100000.0 + "ms");
-
     }
 }

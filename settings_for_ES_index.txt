@@ -1,0 +1,40 @@
+{
+  "my-index-000003": {
+    "settings": {
+      "index": {
+        "routing": {
+          "allocation": {
+            "include": {
+              "_tier_preference": "data_content"
+            }
+          }
+        },
+        "number_of_shards": "1",
+        "provided_name": "my-index-000003",
+        "creation_date": "1726310476880",
+        "analysis": {
+          "analyzer": {
+            "my_analyzer": {
+              "char_filter": [
+                "my_char_filter"
+              ],
+              "tokenizer": "standard"
+            }
+          },
+          "char_filter": {
+            "my_char_filter": {
+              "pattern": """\n""",
+              "type": "pattern_replace",
+              "replacement": """\\n"""
+            }
+          }
+        },
+        "number_of_replicas": "1",
+        "uuid": "EX4F2gW7TcaPAPiYTYv2xg",
+        "version": {
+          "created": "8512000"
+        }
+      }
+    }
+  }
+}
