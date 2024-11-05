@@ -1,0 +1,507 @@
+Commands run in Dev Tools
+
+#clear cache 
+POST /special_char/_cache/clear
+
+# template-matching
+
+GET /my-index-000001/_doc/1
+
+POST /my-index-000001/_doc/
+{
+  "word_count" : 20,
+  "id": 428,
+  "text": "As requested by you here is a stock recommendation.\n\nBuy {{1}} \nTarget price {{2}}\nBuy now using this link {{3}}\n\nWarm Regards,\nTeam MOFSL"
+}
+
+POST /_reindex
+{
+  "source": {
+    "index": "my-index-000003"    
+  },
+  "dest": {
+    "index": "special_char"
+  }
+}
+
+GET /whitespace/_mapping
+GET /whitespace/_settings
+
+POST /my-index-000001/_mapping
+{
+  "mappings": {
+    "properties": {
+      "msg_body": {
+        "type": "text",
+        "analyzer": "my_analyzer"
+      }
+    }
+  }
+}
+
+
+GET /prod_templates_with_wordcount/_search
+{
+  "query": {
+    "match_phrase": {
+      "msg_body": "KFS Acknowledgement!\nClick https://m.bflcomm.in/wBLkWEjXeb9 to view Key Fact Statement (KFS) accepted by you for loan appln no. PJE5GOL13116851\nBajaj Finance Ltd"
+    }
+  }
+}
+
+PUT /sample_2
+{
+  "settings": {
+    "analysis": {
+      "filter": {
+        "replace_special_chars": {
+          "type": "pattern_replace",
+          "pattern": "(\\n|\\t|\\r|\\b)",  // Matches \n, \t, \r, \b
+          "replacement": "\\\\$1"          // Escapes them
+        }
+      },
+      "tokenizer": {
+        "special_char_tokenizer": {
+          "type": "pattern",
+          "pattern": "(\\s+)"  // Split on whitespace, preserving special characters
+        }
+      },
+      "analyzer": {
+        "custom_analyzer": {
+          "tokenizer": "special_char_tokenizer",
+          "filter": [
+            "lowercase",
+            "replace_special_chars"
+          ]
+        }
+      }
+    }
+  }
+}
+
+POST _reindex
+{
+  "source": {
+    "index": "sample"  // Replace with your actual source index
+  },
+  "dest": {
+    "index": "sample_2"  // Replace with your actual destination index
+  },
+  "script": {
+    "lang": "painless",
+    "source": """
+      if (ctx._source.text != null) {
+        ctx._dest.text = ;
+      }
+    """
+  }
+}
+
+POST sample_1/_update_by_query
+{
+  "script": {
+    "lang": "painless",
+    "source": """
+      if (ctx._source.text != null && ctx._source.text instanceof String) {
+        ctx._source.text = ctx._source.text
+          .replace('\\n', '\\\\n')
+          .replace('\\t', '\\\\t')
+          .replace('\\r', '\\\\r')
+          .replace('\\b', '\\\\b');
+      }
+    """
+  }
+}
+
+
+
+GET /my-index-000003/_mapping
+
+
+get /my-new-index/_settings
+
+POST /my-new-index/_analyze
+{
+  "analyzer" : "my_analyzer",
+  "text": "KFS Acknowledgement!\n\nClick https://m.bflcomm.in/wBLkWEjXeb9 to view Key Fact Statement (KFS) accepted by you for loan appln no. PJE5GOL13116851\nBajaj Finance Ltd"
+}
+
+POST /my-new-index/_doc
+{
+  
+}
+
+GET /my-index-000003/_search
+{
+  "query": {
+    "match": {
+      "template_name": {
+      "query": "4th_march_2023_dinein"
+      }
+    }
+  }
+}
+
+
+GET /my-index-000003/_search
+{
+    "size": 5,
+    "query": {
+        "bool": {
+            "must": {
+                "more_like_this": {
+                    "fields": [
+                        "msg_body"
+                    ],
+                    "like": "KFS Acknowledgement!\nClick https://m.bflcomm.in/wBLkWEjXeb9 to view Key Fact Statement (KFS) accepted by you for loan appln no. PJE5GOL13116851\nBajaj Finance Ltd",
+                    "boost": 2,
+                    "min_term_freq": 1,
+                    "min_doc_freq": 2
+                }
+            }
+        }
+    }
+}
+
+
+POST /sample_1/_search
+{
+  "size": 10, 
+  "query": {
+    "bool": {
+      "must": {
+        "more_like_this": {
+          "fields": ["text"],
+          "like" : "As requested by you here is a stock recommendation.\\n\\nBuy {{1}} \\nTarget price {{2}}\\nBuy now using this link {{3}}\\n\\nWarm Regards,\nTeam MOFSL",
+    
+          "min_term_freq": 1,
+          "min_doc_freq": 2,
+          "stop_words": ["a", "the", "and", "of", "in"]
+        }
+      }
+    }
+  }
+}
+
+POST /my-index-000003/_search
+{
+  "query": {
+    "bool": {
+      "filter": {
+        "match": {
+          "esmeaddr": 71925900000000
+        }
+      },
+      "must": {
+        "more_like_this": {
+          "fields": ["msg_body"],
+          "like": "Dear DHARMENDRA  SINGH,\n\nRs.2590.0 was successfully transferred to your AIRP account xx3543 on 04 July at 02:58. Transaction reference number (UTR) is 418652757670. \n\nClick here for more details: https://bharatpe.in/UvYCi",
+          "min_term_freq": 1,
+          "min_doc_freq": 2,
+          "stop_words": ["a", "the", "and", "of", "in"]
+        }
+      }
+    }
+  },
+  "size": 20
+}
+
+
+
+
+PUT /prod_templates_index_ngram_1
+{
+  "settings": {
+    "analysis": {
+      "filter": {
+        "shingle_filter": {
+          "type": "shingle",
+          "min_shingle_size": 2,
+          "max_shingle_size": 3,
+          "output_unigrams": true
+        }
+      },
+      "analyzer": {
+        "shingle_analyzer": {
+          "type": "custom",
+          "tokenizer": "ngram",
+          "filter": [
+            "shingle_filter"
+          ]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "msg_body": {
+        "type": "text",
+        "analyzer": "shingle_analyzer"
+      }
+    }
+  }
+}
+
+# examples
+
+POST _analyze
+{
+  "tokenizer": "pattern",
+  "text": "The foo_bar_size's default \\n is 5."
+}
+
+
+
+
+
+
+# Shard and cluster details
+GET /sample-index/_settings
+
+GET /my-index-000003/_stats
+
+# Changing the status of index from yellow to green
+GET _cat/shards?v=true&h=index,shard,prirep,state,node,unassigned.reason&s=state
+
+
+GET _cat/shards?v
+
+
+
+GET _cat/allocation?v
+
+
+
+GET _cluster/allocation/explain
+{
+  "index": "prod_templates",
+  "shard": 0,
+  "primary": false
+}
+
+PUT _cluster/settings
+{
+  "persistent" : {
+    "cluster.routing.allocation.enable" : "all"
+  }
+}
+
+PUT /prod_templates_with_wordcount_shingle/_settings
+{
+  "number_of_replicas": 0
+}
+
+
+GET /prod_templates/_search_shards
+
+GET _cat/shards/prod_templates?h=id,sh,st,n
+GET /_cluster/health/prod_templates
+
+PUT /_cluster/settings
+{
+  "persistent": {
+    "cluster.routing.allocation.allow_replicas_on_same_node": true
+  }
+}
+
+# Allocation of replica shards to node
+
+POST /_cluster/reroute?metric=none
+{
+  "commands": [
+    {
+      "allocate_replica": {
+        "index": "prod_templates",
+        "shard": 0,
+        "node": "es01"
+      }
+    }
+ ] 
+}
+
+
+# Delete all the documents in an index, without dropping index
+
+POST /.monitoring-es-7-2024.09.10/_delete_by_query
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+
+# Experiment 1:
+
+PUT my-index-000001
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "my_analyzer": {
+          "tokenizer": "standard",
+          "char_filter": [
+            "my_char_filter"
+          ]
+        }
+      },
+      "char_filter": {
+        "my_char_filter": {
+          "type": "pattern_replace",
+          "pattern": "\\n",
+          "replacement": " \\\\n"
+        }
+      }
+    }
+  }
+}
+
+POST my-index-000001/_analyze
+{
+  "analyzer": "my_analyzer",
+  "text": "As requested by you here is a stock recommendation.\\n\\nBuy {{1}} \\nTarget price {{2}}\\nBuy now using this link {{3}}\\n\\nWarm Regards,\nTeam MOFSL"
+}
+GET /my-index-000002/_doc/1
+
+POST _reindex
+{
+  "source": {
+    "index": "my-index-000003"
+  },
+  "dest": {
+    "index": "special_char"
+  },
+  "script": {
+    "lang": "painless",
+    "source": """
+      if (ctx._source.text != null) {
+        ctx._source.text = ctx._source.text.replace('\n', '\\n');
+      }"""
+  }
+}
+
+
+
+# Experiment 2: With Ingest Pipeline
+
+PUT _ingest/pipeline/replace_newline_pipeline
+{
+  "description": "Replace newline characters with \\n",
+  "processors": [
+    {
+      "script": {
+        "lang": "painless",
+        "source": """
+          if (ctx.message != null) {
+            ctx.message = ctx.message.replace('\\n', '\\\\n');
+          }
+        """
+      }
+    }
+  ]
+}
+
+
+POST my-index-000001/_doc?pipeline=replace_newline_pipeline
+{
+  "message": "First line\nSecond line"
+}
+
+GET /special_char/_mapping
+
+
+
+PUT /special_char
+{
+  "settings": {
+    "index": {
+        "number_of_shards": 1,
+        "number_of_replicas": 0,
+        "analysis": {
+          "analyzer": {
+            "my_analyzer": {
+              "char_filter": [
+                "my_char_filter"
+              ],
+              "tokenizer": "standard"  // Use whitespace tokenizer to consider multiple spaces
+            }
+          },
+          "char_filter": {
+            "my_char_filter": {
+              "pattern": """\n""",
+              "type": "pattern_replace",
+              "replacement": """ \\n _"""
+            }
+          }
+        
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "esmeaddr": {
+        "type": "long"
+      },
+      "msg_body": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        },
+        "analyzer": "my_analyzer"  // Use the custom analyzer
+      },
+      "template_name": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        },
+        "analyzer": "my_analyzer"  // Use the custom analyzer
+      },
+      "word_count": {
+        "type": "long"
+      }
+    }
+  }
+}
+
+GET /my-new-index/_analyze
+{
+  "analyzer" : "my_analyzer",
+  "text": "Dear DHARMENDRA  SINGH,\n\nRs.2590.0 was successfully transferred to your AIRP account xx3543 on 04 July at 02:58. Transaction reference number (UTR) is 418652757670. \n\nClick here for more details: https://bharatpe.in/UvYCi"
+}
+
+GET /special_char/_analyze
+{
+  "analyzer" : "my_analyzer",
+  "text": "Dear DHARMENDRA  SINGH,\nRs.2590.0 was successfully transferred to your AIRP account xx3543 on 04 July at 02:58. Transaction reference number (UTR) is 418652757670. \n\nClick here for more details: https://bharatpe.in/UvYCi"
+}
+
+GET /special_char/_analyze
+{
+  "analyzer" : "my_analyzer",
+  "text": "Dear {{1}},\n\nRs.{{2}} was successfully transferred to your {{3}} account {{4}} on {{5}} at {{6}}. Transaction reference number (UTR) is {{7}}. \n\nClick here for more details: {{8}}"
+}
+
+GET /my-index-000003/_analyze
+{
+  "analyzer" : "my_analyzer",
+  "text": "Dear {{1}},\nWe have initiated the transfer of Rs. {{2}} to your {{3}} account {{4}}. You should receive funds in your bank account {{5}}. {{6}}Txn details: {{7}}"
+}
+
+
+
+
+
+POST /special_char/_doc
+{
+  "template_name" : "Custom_template_for_special_characters",
+  "word_count": 34,
+  "esmeaddr" : 71925900000000,
+  "msg_body" : "Dear {{1}},\nRs.{{2}} was successfully transferred to your {{3}} account {{4}} on {{5}} at {{6}}. Transaction reference number (UTR) is {{7}}. \n\nClick here for more details: {{8}}"
+}
+
+
