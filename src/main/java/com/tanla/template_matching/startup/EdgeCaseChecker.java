@@ -87,181 +87,184 @@ import org.springframework.stereotype.Component;
 *           The average execution time for Case 4 with similar string : 31.682ms 
  */
 
-@Component
+// @Component
 public class EdgeCaseChecker implements CommandLineRunner {
 
-    @Autowired
-    public ElasticsearchClient esClient;
+        @Autowired
+        public ElasticsearchClient esClient;
 
-    public static final Logger logger = LogManager.getLogger(EdgeCaseChecker.class);
+        public static final Logger logger = LogManager.getLogger(EdgeCaseChecker.class);
 
-    @Override
-    public void run(String... args) throws IOException {
+        @Override
+        public void run(String... args) throws IOException {
 
-        logger.info("====================================================");
-        logger.info("Correct Text : " + DummyMessages.correctTextForFullScanExecutionTime.replace("\n", "\\n"));
-        logger.info("==============================================");
-        logger.info(
-                "Case Altered Text : " + DummyMessages.charReplaceTextForFullScanExecutionTime.replace("\n", "\\n"));
-        logger.info("====================================================");
+                logger.info("====================================================");
+                logger.info("Correct Text : " + DummyMessages.correctTextForFullScanExecutionTime.replace("\n", "\\n"));
+                logger.info("==============================================");
+                logger.info(
+                                "Case Altered Text : " + DummyMessages.charReplaceTextForFullScanExecutionTime
+                                                .replace("\n", "\\n"));
+                logger.info("====================================================");
 
-        // Case 1:
+                // Case 1:
 
-        // Case Sensitive Searching
-        // 1a
-        long start, end;
+                // Case Sensitive Searching
+                // 1a
+                long start, end;
 
-        logger.info("====================================================");
-        logger.info("Case sensitive searching");
-        logger.info("==============================================");
-        logger.info("We are running the Case 1a");
-        logger.info("==============================================");
+                logger.info("====================================================");
+                logger.info("Case sensitive searching");
+                logger.info("==============================================");
+                logger.info("We are running the Case 1a");
+                logger.info("==============================================");
 
-        start = System.currentTimeMillis();
-        if (ElasticSearch.moreLikeThisTemplateSearchWithCaseSensitivity(esClient, Constants.indexName,
-                Constants.numberOfHitsToBeConsidered, DummyMessages.correctTextForFullScanExecutionTime,
-                DummyMessages.esmeAddrForCorrectTextForFullScanExecutionTime, true)) {
-            logger.info("Found the Input Message matching template");
+                start = System.currentTimeMillis();
+                if (ElasticSearch.moreLikeThisTemplateSearchWithCaseSensitivity(esClient, Constants.indexName,
+                                Constants.numberOfHitsToBeConsidered, DummyMessages.correctTextForFullScanExecutionTime,
+                                DummyMessages.esmeAddrForCorrectTextForFullScanExecutionTime, true)) {
+                        logger.info("Found the Input Message matching template");
+                }
+                end = System.currentTimeMillis();
+
+                logger.info("The execution time for Case 1a : " + (end - start) + "ms");
+
+                // 1b
+
+                logger.info("==============================================");
+                logger.info("We are running the Case 1b");
+                logger.info("==============================================");
+
+                start = System.currentTimeMillis();
+                if (ElasticSearch.moreLikeThisTemplateSearchWithCaseSensitivity(esClient, Constants.indexName,
+                                Constants.numberOfHitsToBeConsidered,
+                                DummyMessages.charReplaceTextForFullScanExecutionTime,
+                                DummyMessages.esmeAddrForCharReplaceTextForFullScanExecutionTime, true)) {
+                        logger.info("Found the Input Message matching template");
+                }
+                end = System.currentTimeMillis();
+
+                logger.info("The execution time for Case 1b : " + (end - start) + "ms");
+
+                logger.info("====================================================");
+                logger.info("Case Insensitive searching");
+                logger.info("==============================================");
+                logger.info("We are running the Case 1a");
+                logger.info("==============================================");
+
+                start = System.currentTimeMillis();
+                if (ElasticSearch.moreLikeThisTemplateSearchWithCaseSensitivity(esClient, Constants.indexName,
+                                Constants.numberOfHitsToBeConsidered, DummyMessages.correctTextForFullScanExecutionTime,
+                                DummyMessages.esmeAddrForCorrectTextForFullScanExecutionTime, false)) {
+                        logger.info("Found the Input Message matching template");
+                }
+                end = System.currentTimeMillis();
+
+                logger.info("The execution time for Case 1a : " + (end - start) + "ms");
+
+                // 1b
+
+                logger.info("==============================================");
+                logger.info("We are running the Case 1b");
+                logger.info("==============================================");
+
+                start = System.currentTimeMillis();
+                if (ElasticSearch.moreLikeThisTemplateSearchWithCaseSensitivity(esClient, Constants.indexName,
+                                Constants.numberOfHitsToBeConsidered,
+                                DummyMessages.charReplaceTextForFullScanExecutionTime,
+                                DummyMessages.esmeAddrForCharReplaceTextForFullScanExecutionTime, false)) {
+                        logger.info("Found the Input Message matching template");
+                }
+                end = System.currentTimeMillis();
+
+                logger.info("The execution time for Case 1b : " + (end - start) + "ms");
+
+                // Case 2:
+
+                logger.info("====================================================");
+                logger.info("Case 2 :");
+                logger.info("The index in which I am searching the text : " + Constants.indexName);
+                logger.info("==============================================");
+                logger.info("We are running the Case with String 1 : "
+                                + DummyMessages.specialCharactersCaseString1.replace("\n", "\\n"));
+                logger.info("==============================================");
+
+                start = System.currentTimeMillis();
+                if (ElasticSearch.moreLikeThisTemplateSearchForNumberOfSpaces(esClient, Constants.indexName,
+                                Constants.numberOfHitsToBeConsidered, DummyMessages.specialCharactersCaseString1,
+                                DummyMessages.esmeAddrForSpecialCharactersCaseString1)) {
+                        logger.info("Found the Input Message matching template");
+                }
+                end = System.currentTimeMillis();
+
+                logger.info("The execution time for Case 2 with string 1 : " + (end - start) + "ms");
+
+                logger.info("==============================================");
+                logger.info("We are running the Case with String 2 : "
+                                + DummyMessages.specialCharactersCaseString2.replace("\n", "\\n"));
+                logger.info("==============================================");
+
+                start = System.currentTimeMillis();
+                if (ElasticSearch.moreLikeThisTemplateSearchForNumberOfSpaces(esClient, Constants.indexName,
+                                Constants.numberOfHitsToBeConsidered, DummyMessages.specialCharactersCaseString2,
+                                DummyMessages.esmeAddrForSpecialCharactersCaseString2)) {
+                        logger.info("Found the Input Message matching template");
+                }
+                end = System.currentTimeMillis();
+
+                logger.info("The execution time for Case 2 with string 2 : " + (end - start) + "ms");
+
+                // Case 4:
+
+                logger.info("====================================================");
+                logger.info("Case 4 :");
+                logger.info("The index in which I am searching the text : " +
+                                Constants.indexName);
+                logger.info("==============================================");
+                logger.info("We are running the Case 4 with dummy text with no similar tokens: "
+                                + DummyMessages.dummyTextWithNoSimilarTokensForCase4.replace("\n", "\\n"));
+                logger.info("==============================================");
+
+                start = System.currentTimeMillis();
+                for (int i = 0; i < 1; i++) {
+                        if (ElasticSearch.moreLikeThisTemplateSearchForNumberOfSpaces(esClient,
+                                        Constants.indexName,
+                                        Constants.numberOfHitsToBeConsidered,
+                                        DummyMessages.dummyTextWithNoSimilarTokensForCase4,
+                                        DummyMessages.esmeaddrFordummyTextWithNoSimilarTokenForCase4)) {
+                                logger.info("Found the Input Message matching template");
+                        } else {
+                                logger.info("Not Found in the database even after full scan");
+                        }
+                }
+                end = System.currentTimeMillis();
+
+                logger.info("The execution time for Case 4 with dummy string : " + (end -
+                                start) + "ms");
+                logger.info("The average execution time for Case 4 with dummy string : " +
+                                (end - start) / (1000 * 1.0) + "ms");
+
+                logger.info("==============================================");
+                logger.info("We are running the Case 4 with similar tokens : "
+                                + DummyMessages.esmeaddrForSimilarTextForCase4.replace("\n", "\\n"));
+                logger.info("==============================================");
+
+                start = System.currentTimeMillis();
+                for (int i = 0; i < 1000; i++) {
+                        if (ElasticSearch.moreLikeThisTemplateSearch(esClient, Constants.indexName,
+                                        Constants.numberOfHitsToBeConsidered, DummyMessages.similarTextForCase4,
+                                        DummyMessages.esmeaddrForSimilarTextForCase4)) {
+                                // logger.info("Found the Input Message matching template");
+                        } else {
+                                // logger.info("Not Found in the database even after full scan");
+                        }
+                }
+                end = System.currentTimeMillis();
+
+                logger.info("The execution time for Case 4 with similar string : " + (end -
+                                start) + "ms");
+                logger.info(
+                                "The average execution time for Case 4 with similar string : " + (end -
+                                                start) / (1000 * 1.0) + "ms");
+
         }
-        end = System.currentTimeMillis();
-
-        logger.info("The execution time for Case 1a : " + (end - start) + "ms");
-
-        // 1b
-
-        logger.info("==============================================");
-        logger.info("We are running the Case 1b");
-        logger.info("==============================================");
-
-        start = System.currentTimeMillis();
-        if (ElasticSearch.moreLikeThisTemplateSearchWithCaseSensitivity(esClient, Constants.indexName,
-                Constants.numberOfHitsToBeConsidered, DummyMessages.charReplaceTextForFullScanExecutionTime,
-                DummyMessages.esmeAddrForCharReplaceTextForFullScanExecutionTime, true)) {
-            logger.info("Found the Input Message matching template");
-        }
-        end = System.currentTimeMillis();
-
-        logger.info("The execution time for Case 1b : " + (end - start) + "ms");
-
-        logger.info("====================================================");
-        logger.info("Case Insensitive searching");
-        logger.info("==============================================");
-        logger.info("We are running the Case 1a");
-        logger.info("==============================================");
-
-        start = System.currentTimeMillis();
-        if (ElasticSearch.moreLikeThisTemplateSearchWithCaseSensitivity(esClient, Constants.indexName,
-                Constants.numberOfHitsToBeConsidered, DummyMessages.correctTextForFullScanExecutionTime,
-                DummyMessages.esmeAddrForCorrectTextForFullScanExecutionTime, false)) {
-            logger.info("Found the Input Message matching template");
-        }
-        end = System.currentTimeMillis();
-
-        logger.info("The execution time for Case 1a : " + (end - start) + "ms");
-
-        // 1b
-
-        logger.info("==============================================");
-        logger.info("We are running the Case 1b");
-        logger.info("==============================================");
-
-        start = System.currentTimeMillis();
-        if (ElasticSearch.moreLikeThisTemplateSearchWithCaseSensitivity(esClient, Constants.indexName,
-                Constants.numberOfHitsToBeConsidered, DummyMessages.charReplaceTextForFullScanExecutionTime,
-                DummyMessages.esmeAddrForCharReplaceTextForFullScanExecutionTime, false)) {
-            logger.info("Found the Input Message matching template");
-        }
-        end = System.currentTimeMillis();
-
-        logger.info("The execution time for Case 1b : " + (end - start) + "ms");
-
-        // Case 2:
-
-        logger.info("====================================================");
-        logger.info("Case 2 :");
-        logger.info("The index in which I am searching the text : " + Constants.indexName);
-        logger.info("==============================================");
-        logger.info("We are running the Case with String 1 : "
-                + DummyMessages.specialCharactersCaseString1.replace("\n", "\\n"));
-        logger.info("==============================================");
-
-        start = System.currentTimeMillis();
-        if (ElasticSearch.moreLikeThisTemplateSearchForNumberOfSpaces(esClient, Constants.indexName,
-                Constants.numberOfHitsToBeConsidered, DummyMessages.specialCharactersCaseString1,
-                DummyMessages.esmeAddrForSpecialCharactersCaseString1)) {
-            logger.info("Found the Input Message matching template");
-        }
-        end = System.currentTimeMillis();
-
-        logger.info("The execution time for Case 2 with string 1 : " + (end - start) + "ms");
-
-        logger.info("==============================================");
-        logger.info("We are running the Case with String 2 : "
-                + DummyMessages.specialCharactersCaseString2.replace("\n", "\\n"));
-        logger.info("==============================================");
-
-        start = System.currentTimeMillis();
-        if (ElasticSearch.moreLikeThisTemplateSearchForNumberOfSpaces(esClient, Constants.indexName,
-                Constants.numberOfHitsToBeConsidered, DummyMessages.specialCharactersCaseString2,
-                DummyMessages.esmeAddrForSpecialCharactersCaseString2)) {
-            logger.info("Found the Input Message matching template");
-        }
-        end = System.currentTimeMillis();
-
-        logger.info("The execution time for Case 2 with string 2 : " + (end - start) + "ms");
-
-        // Case 4:
-
-        logger.info("====================================================");
-        logger.info("Case 4 :");
-        logger.info("The index in which I am searching the text : " +
-                Constants.indexName);
-        logger.info("==============================================");
-        logger.info("We are running the Case 4 with dummy text with no similar tokens: "
-                + DummyMessages.dummyTextWithNoSimilarTokensForCase4.replace("\n", "\\n"));
-        logger.info("==============================================");
-
-        start = System.currentTimeMillis();
-        for (int i = 0; i < 1; i++) {
-            if (ElasticSearch.moreLikeThisTemplateSearchForNumberOfSpaces(esClient,
-                    Constants.indexName,
-                    Constants.numberOfHitsToBeConsidered,
-                    DummyMessages.dummyTextWithNoSimilarTokensForCase4,
-                    DummyMessages.esmeaddrFordummyTextWithNoSimilarTokenForCase4)) {
-                logger.info("Found the Input Message matching template");
-            } else {
-                logger.info("Not Found in the database even after full scan");
-            }
-        }
-        end = System.currentTimeMillis();
-
-        logger.info("The execution time for Case 4 with dummy string : " + (end -
-                start) + "ms");
-        logger.info("The average execution time for Case 4 with dummy string : " +
-                (end - start) / (1000 * 1.0) + "ms");
-
-        logger.info("==============================================");
-        logger.info("We are running the Case 4 with similar tokens : "
-                + DummyMessages.esmeaddrForSimilarTextForCase4.replace("\n", "\\n"));
-        logger.info("==============================================");
-
-        start = System.currentTimeMillis();
-        for (int i = 0; i < 1000; i++) {
-            if (ElasticSearch.moreLikeThisTemplateSearch(esClient, Constants.indexName,
-                    Constants.numberOfHitsToBeConsidered, DummyMessages.similarTextForCase4,
-                    DummyMessages.esmeaddrForSimilarTextForCase4)) {
-                // logger.info("Found the Input Message matching template");
-            } else {
-                // logger.info("Not Found in the database even after full scan");
-            }
-        }
-        end = System.currentTimeMillis();
-
-        logger.info("The execution time for Case 4 with similar string : " + (end -
-                start) + "ms");
-        logger.info(
-                "The average execution time for Case 4 with similar string : " + (end -
-                        start) / (1000 * 1.0) + "ms");
-
-    }
 }
