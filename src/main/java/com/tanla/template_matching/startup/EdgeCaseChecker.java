@@ -1,19 +1,15 @@
 package com.tanla.template_matching.startup;
 
-import java.io.IOException;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.tomcat.util.bcel.Const;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
-
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import com.tanla.template_matching.Utils.DummyMessages;
 import com.tanla.template_matching.constants.Constants;
 import com.tanla.template_matching.search.ElasticSearch;
-
-import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import java.io.IOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
 
 /*
  * I will have to check the below use cases
@@ -216,57 +212,56 @@ public class EdgeCaseChecker implements CommandLineRunner {
 
         // Case 4:
 
-        // logger.info("====================================================");
-        // logger.info("Case 4 :");
-        // logger.info("The index in which I am searching the text : " +
-        // Constants.indexName);
-        // logger.info("==============================================");
-        // logger.info("We are running the Case 4 with dummy text with no similar tokens
-        // : "
-        // + DummyMessages.dummyTextWithNoSimilarTokensForCase4.replace("\n", "\\n"));
-        // logger.info("==============================================");
+        logger.info("====================================================");
+        logger.info("Case 4 :");
+        logger.info("The index in which I am searching the text : " +
+                Constants.indexName);
+        logger.info("==============================================");
+        logger.info("We are running the Case 4 with dummy text with no similar tokens: "
+                + DummyMessages.dummyTextWithNoSimilarTokensForCase4.replace("\n", "\\n"));
+        logger.info("==============================================");
 
-        // start = System.currentTimeMillis();
-        // for (int i = 0; i < 1000; i++) {
-        // if (ElasticSearch.moreLikeThisTemplateSearchForNumberOfSpaces(esClient,
-        // Constants.indexName,
-        // Constants.numberOfHitsToBeConsidered,
-        // DummyMessages.dummyTextWithNoSimilarTokensForCase4,
-        // DummyMessages.esmeaddrFordummyTextWithNoSimilarTokenForCase4)) {
-        // logger.info("Found the Input Message matching template");
-        // } else {
-        // logger.info("Not Found in the database even after full scan");
-        // }
-        // }
-        // end = System.currentTimeMillis();
+        start = System.currentTimeMillis();
+        for (int i = 0; i < 1; i++) {
+            if (ElasticSearch.moreLikeThisTemplateSearchForNumberOfSpaces(esClient,
+                    Constants.indexName,
+                    Constants.numberOfHitsToBeConsidered,
+                    DummyMessages.dummyTextWithNoSimilarTokensForCase4,
+                    DummyMessages.esmeaddrFordummyTextWithNoSimilarTokenForCase4)) {
+                logger.info("Found the Input Message matching template");
+            } else {
+                logger.info("Not Found in the database even after full scan");
+            }
+        }
+        end = System.currentTimeMillis();
 
-        // logger.info("The execution time for Case 4 with dummy string : " + (end -
-        // start) + "ms");
-        // logger.info("The average execution time for Case 4 with dummy string : " +
-        // (end - start) / (1000 * 1.0) + "ms");
+        logger.info("The execution time for Case 4 with dummy string : " + (end -
+                start) + "ms");
+        logger.info("The average execution time for Case 4 with dummy string : " +
+                (end - start) / (1000 * 1.0) + "ms");
 
-        // logger.info("==============================================");
-        // logger.info("We are running the Case 4 with similar tokens : "
-        // + DummyMessages.esmeaddrForSimilarTextForCase4.replace("\n", "\\n"));
-        // logger.info("==============================================");
+        logger.info("==============================================");
+        logger.info("We are running the Case 4 with similar tokens : "
+                + DummyMessages.esmeaddrForSimilarTextForCase4.replace("\n", "\\n"));
+        logger.info("==============================================");
 
-        // start = System.currentTimeMillis();
-        // for (int i = 0; i < 1000; i++) {
-        // if (ElasticSearch.moreLikeThisTemplateSearch(esClient, Constants.indexName,
-        // Constants.numberOfHitsToBeConsidered, DummyMessages.similarTextForCase4,
-        // DummyMessages.esmeaddrForSimilarTextForCase4)) {
-        // // logger.info("Found the Input Message matching template");
-        // } else {
-        // // logger.info("Not Found in the database even after full scan");
-        // }
-        // }
-        // end = System.currentTimeMillis();
+        start = System.currentTimeMillis();
+        for (int i = 0; i < 1000; i++) {
+            if (ElasticSearch.moreLikeThisTemplateSearch(esClient, Constants.indexName,
+                    Constants.numberOfHitsToBeConsidered, DummyMessages.similarTextForCase4,
+                    DummyMessages.esmeaddrForSimilarTextForCase4)) {
+                // logger.info("Found the Input Message matching template");
+            } else {
+                // logger.info("Not Found in the database even after full scan");
+            }
+        }
+        end = System.currentTimeMillis();
 
-        // logger.info("The execution time for Case 4 with similar string : " + (end -
-        // start) + "ms");
-        // logger.info(
-        // "The average execution time for Case 4 with similar string : " + (end -
-        // start) / (1000 * 1.0) + "ms");
+        logger.info("The execution time for Case 4 with similar string : " + (end -
+                start) + "ms");
+        logger.info(
+                "The average execution time for Case 4 with similar string : " + (end -
+                        start) / (1000 * 1.0) + "ms");
 
     }
 }
